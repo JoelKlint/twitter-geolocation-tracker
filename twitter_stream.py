@@ -1,5 +1,5 @@
+from shell_arguments import ShellArguments
 import os
-import sys
 import tweepy
 from tweepy_stream_listener import StreamListener
 
@@ -17,8 +17,6 @@ streamListener = StreamListener()
 stream = tweepy.Stream(auth=api.auth, listener=streamListener)
 
 # Create a stream connection
-filter_args = sys.argv
-filter_args.reverse()
-filter_args.pop()
-print("Filter is set to: " + str(filter_args))
-stream.filter(track=filter_args)
+filter = ShellArguments().get_filter()
+print("Filter is set to: " + str(filter))
+stream.filter(track=filter)
