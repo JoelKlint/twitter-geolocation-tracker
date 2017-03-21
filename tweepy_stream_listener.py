@@ -99,19 +99,26 @@ class StreamListener(tweepy.StreamListener):
         user_url = user.get('url')
         user_geo_enabled = user.get('geo_enabled')
 
-        print ('About to save')
-        print ('id: ', id, 'text: ', text, 'geo: ', geo, 'user_id: ', user_id, 'longitude: ', longitude,
-               'latitude: ', latitude, 'place_id: ', place_id,
-               'retweeted_id: ', retweeted_id, 'Original tweet retweet count: ', original_tweet_retweet_count,
-               'in reply tweet id: ', in_reply_to_status_id, 'in reply user id: ', in_reply_to_user_id, 'language: ', lang)
+        # print ('About to save')
+        # print ('id: ', id, 'text: ', text, 'geo: ', geo, 'user_id: ', user_id, 'longitude: ', longitude,
+            #    'latitude: ', latitude, 'place_id: ', place_id,
+            #    'retweeted_id: ', retweeted_id, 'Original tweet retweet count: ', original_tweet_retweet_count,
+            #    'in reply tweet id: ', in_reply_to_status_id, 'in reply user id: ', in_reply_to_user_id, 'language: ', lang)
 
         if user_id == None:
             print('GOT NULL')
             print(raw_data)
 
-        db.save_user(user_id, user_screen_name, user_name, user_location,
+        # Save user to database
+        if db.user_exists(user_id):
+            db.update_user(user_id, user_screen_name, user_name, user_location,
                       user_description, user_followers_count, user_friends_count,
                       user_time_zone, user_lang, user_url, user_geo_enabled)
+        else:
+            db.save_user(user_id, user_screen_name, user_name, user_location,
+                      user_description, user_followers_count, user_friends_count,
+                      user_time_zone, user_lang, user_url, user_geo_enabled)
+
         print ('Tweet is original')
         db.save_tweet(id, text, geo, user_id, longitude, latitude, place_id,
                     retweeted_id, original_tweet_retweet_count,

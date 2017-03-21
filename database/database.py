@@ -54,7 +54,63 @@ class Database:
         cur.execute(statement, (user_id, user_screen_name, user_name, user_location, user_description, user_followers_count, user_friends_count, user_time_zone, user_lang, user_url, user_geo_enabled))
         self.conn.commit()
         cur.close
-        print ('User Saved!')
+        # print ('User Saved!')
+
+    def user_exists(self, user_id):
+        cur = self.conn.cursor()
+        statement = "SELECT user_id FROM users WHERE user_id = %s"
+        data = [user_id]
+        cur.execute(statement, data)
+        
+        res = cur.fetchone()
+        self.conn.commit()
+        cur.close
+        return True if res != None else False
+    
+    def update_user(self,
+        user_id = None,
+        user_screen_name = None,
+        user_name = None,
+        user_location = None,
+        user_description = None,
+        user_followers_count = None,
+        user_friends_count = None,
+        user_time_zone = None,
+        user_lang = None,
+        user_url = None,
+        user_geo_enabled = None):
+
+        cur = self.conn.cursor()
+        statement = """
+            UPDATE users
+            SET user_screen_name = %s, 
+            user_name = %s, 
+            user_location = %s, 
+            user_description = %s, 
+            user_followers_count = %s, 
+            user_friends_count = %s, 
+            user_time_zone = %s, 
+            user_lang = %s, 
+            user_url = %s, 
+            user_geo_enabled = %s
+            WHERE user_id = %s
+        """
+        data = [user_screen_name, 
+            user_name, 
+            user_location, 
+            user_description, 
+            user_followers_count, 
+            user_friends_count, 
+            user_time_zone, 
+            user_lang, 
+            user_url, 
+            user_geo_enabled,
+            user_id
+        ]
+        cur.execute(statement, data)
+        self.conn.commit()
+        cur.close
+        # print('User updated')
 
     def save_place(self,
         place_id = None,
@@ -71,7 +127,7 @@ class Database:
 
         cur = self.conn.cursor()
         statement = """
-        INSERT INTO users
+        INSERT INTO places
         (place_id, place_name, place_country, place_country_code, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code)
         VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
