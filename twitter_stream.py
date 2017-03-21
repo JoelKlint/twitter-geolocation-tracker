@@ -1,4 +1,5 @@
 import os
+import sys
 import tweepy
 from tweepy_stream_listener import StreamListener
 
@@ -16,4 +17,8 @@ streamListener = StreamListener()
 stream = tweepy.Stream(auth=api.auth, listener=streamListener)
 
 # Create a stream connection
-stream.filter(track=['@realDonaldTrump'])
+filter_args = sys.argv
+filter_args.reverse()
+filter_args.pop()
+print("Filter is set to: " + str(filter_args))
+stream.filter(track=filter_args)
