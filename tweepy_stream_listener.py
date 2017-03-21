@@ -33,6 +33,7 @@ class StreamListener(tweepy.StreamListener):
         in_reply_to_status_id = data.get('in_reply_to_status_id')
         in_reply_to_user_id = data.get('in_reply_to_user_id')
         lang = data.get('lang')
+        print (retweeted_id)
         if latitude != None:
             print(longitude)
             print(latitude)
