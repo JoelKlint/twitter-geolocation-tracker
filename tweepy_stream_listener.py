@@ -6,7 +6,7 @@ json = import_simplejson()
 class StreamListener(tweepy.StreamListener):
 
     def on_data(self, raw_data):
-        print("-----")
+        # print("-----")
         data = json.loads(raw_data)
 
         # Extract tweet info
@@ -35,7 +35,7 @@ class StreamListener(tweepy.StreamListener):
         place = data.get('place')
         place_id = None
         if place != None:
-            print(place)
+            # print(place)
             place_name = place.get('name', None)
             place_country = place.get('country', None)
             place_contry_code = place.get('country_code', None)
@@ -58,7 +58,7 @@ class StreamListener(tweepy.StreamListener):
                 place_postal_code = attributes.get('postal_code', None)
 
             bounding_box = place.get('bounding_box', None)
-            print (bounding_box)
+            # print (bounding_box)
             if bounding_box != None:
                 bound_coordinates = bounding_box.get('coordinates', None)
                 bound_type = bounding_box.get('type', None)
@@ -68,7 +68,10 @@ class StreamListener(tweepy.StreamListener):
                             # INSERT INTO BOUNDING BOX TABLE HERE
                             bound_longitude = coordinate[0]
                             bound_latitude = coordinate[1]
-            db.save_place(place_id, place_name, place_country, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code)
+            if db.place_exists(place_id):
+                db.update_place(place_id, place_name, place_country, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code)
+            else:
+                db.save_place(place_id, place_name, place_country, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code)
 
 
     #Handle retweets
@@ -119,7 +122,8 @@ class StreamListener(tweepy.StreamListener):
                       user_description, user_followers_count, user_friends_count,
                       user_time_zone, user_lang, user_url, user_geo_enabled)
 
-        print ('Tweet is original')
-        db.save_tweet(id, text, geo, user_id, longitude, latitude, place_id,
-                    retweeted_id, original_tweet_retweet_count,
-                    in_reply_to_status_id, in_reply_to_user_id, lang)
+        # print ('Tweet is original')
+        if not(db.tweet_exists(id)):
+            db.save_tweet(id, text, geo, user_id, longitude, latitude, place_id,
+                        retweeted_id, original_tweet_retweet_count,
+                        in_reply_to_status_id, in_reply_to_user_id, lang)

@@ -30,7 +30,18 @@ class Database:
         cur.execute(statement, (id, text, geo, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
         self.conn.commit()
         cur.close()
-        print ('Tweet Saved!')
+        # print ('Tweet Saved!')
+
+    def tweet_exists(self, tweet_id):
+        cur = self.conn.cursor()
+        statement = "SELECT id FROM tweets WHERE id = %s"
+        data = [tweet_id]
+        cur.execute(statement, data)
+        
+        res = cur.fetchone()
+        self.conn.commit()
+        cur.close
+        return True if res != None else False
 
     def save_user(self,
         user_id = None,
@@ -135,4 +146,60 @@ class Database:
         self.conn.commit()
         cur.close
 
-        print('Place Saved!')
+        # print('Place Saved!')
+
+    def place_exists(self, place_id):
+        cur = self.conn.cursor()
+        statement = "SELECT place_id FROM places WHERE place_id = %s"
+        data = [place_id]
+        cur.execute(statement, data)
+        
+        res = cur.fetchone()
+        self.conn.commit()
+        cur.close
+        return True if res != None else False
+
+    def update_place(self,
+        place_id = None,
+        place_name = None,
+        place_country = None,
+        place_country_code = None,
+        place_full_name = None,
+        place_type = None,
+        place_street_address = None,
+        place_locality = None,
+        place_region = None,
+        place_iso3_country_code = None,
+        place_postal_code = None):
+
+        cur = self.conn.cursor()
+        statement = """
+            UPDATE places
+            SET place_name = %s, 
+            place_country = %s, 
+            place_country_code = %s, 
+            place_full_name = %s, 
+            place_type = %s, 
+            place_street_address = %s, 
+            place_locality = %s, 
+            place_region = %s, 
+            place_iso3_country_code = %s, 
+            place_postal_code = %s
+            WHERE place_id = %s
+        """
+        data = [place_name, 
+            place_country, 
+            place_country_code, 
+            place_full_name, 
+            place_type, 
+            place_street_address, 
+            place_locality, 
+            place_region, 
+            place_iso3_country_code, 
+            place_postal_code,
+            place_id
+        ]
+        cur.execute(statement, data)
+        self.conn.commit()
+        cur.close
+        # print('Place updated')
