@@ -1,6 +1,6 @@
 import tweepy
 from tweepy.utils import import_simplejson
-import database
+from database.database import Database
 json = import_simplejson()
 
 class StreamListener(tweepy.StreamListener):
@@ -12,7 +12,7 @@ class StreamListener(tweepy.StreamListener):
         # Extract tweet info
 
 
-        db = database.Database('twitter-geo')
+        db = Database('twitter-geo')
 
         id = data.get('id')
         if id == None:

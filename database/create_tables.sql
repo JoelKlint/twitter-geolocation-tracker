@@ -1,3 +1,5 @@
+-- This file defines all tables for the database
+
 CREATE TABLE IF NOT EXISTS places (
     place_id TEXT,
     place_name TEXT,
