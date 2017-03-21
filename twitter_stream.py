@@ -16,4 +16,4 @@ streamListener = StreamListener()
 stream = tweepy.Stream(auth=api.auth, listener=streamListener)
 
 # Create a stream connection
-stream.filter(track=['python'])
+stream.filter(track=['@realDonaldTrump'])
