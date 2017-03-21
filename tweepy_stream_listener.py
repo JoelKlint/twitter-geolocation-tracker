@@ -1,5 +1,6 @@
 import tweepy
 from tweepy.utils import import_simplejson
+import database
 json = import_simplejson()
 
 class StreamListener(tweepy.StreamListener):
@@ -7,8 +8,8 @@ class StreamListener(tweepy.StreamListener):
     def on_data(self, raw_data):
         print("-----")
         data = json.loads(raw_data)
-
         # Extract tweet info
+
         id = data.get('id')
         text = data.get('text')
         hashtags_array = data.get('entities', {}).get('hashtags', [])
@@ -83,3 +84,8 @@ class StreamListener(tweepy.StreamListener):
         user_lang = user.get('lang')
         user_url = user.get('url')
         user_geo_enabled = user.get('geo_enabled')
+
+        db = database.Database('twitter-geo')
+        db.save_tweet(id, text, geo, user_id, longitude, latitude, place_id, 
+                        retweeted_id, original_tweet_retweet_count, 
+                        in_reply_to_status_id, in_reply_to_user_id, lang)

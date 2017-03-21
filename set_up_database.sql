@@ -48,7 +48,6 @@ CREATE TABLE IF NOT EXISTS tweets (
     text TEXT,
     geo TEXT,
     user_id INT,
-    tweet_hashtag_id INT,
     longitude FLOAT,
     latitude FLOAT,
     place_id INT,
