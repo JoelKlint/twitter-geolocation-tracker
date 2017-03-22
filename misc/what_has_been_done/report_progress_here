@@ -1,3 +1,8 @@
 Anledningen till denna filen är att underlätta för varandra när man arbetar på egen hand så vi vet vad som behöver göras och vad som redan är gjort. 
 
-22/3: Adderade misc map för övriga prylar. La in ett sql commando för att snabbt kunna kolla storleken för vår databas
+22/3: 
+- Adderade misc map för övriga prylar. La in ett sql commando för att snabbt kunna kolla storleken för vår databas. 
+- Man kan nu starta programmet via /startup/init.sh start <filter 1> <filter 2> ... Observera att det verkar finnas någon form av throtteling på twitters sida då jag aldrig lyckats starta mer än 2 filter sammtidig.
+- Om man startar via /startup/init.sh bör man även stoppa allting därigenom. Detta görs via bash /startup/init.sh stop. Detta gör lite cleanup av filer som håller koll på process id och liknande. Töm ej PID_DIR på egen hand, då detta sabbar denna funktionallitet. Skulle du råka köra detta kan du köra "ps" och "kill -9 <pid>" 
+- För att se vilka filter som faktiskt startade kan man köra bash /startup/init.sh status.
+- För att starta om filterna kan man köra bash /startup/init.sh restart
