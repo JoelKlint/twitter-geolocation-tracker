@@ -15,3 +15,18 @@ $ bash database/setup.sh
 ```shell
 $ pip3 install virtualenv && virtualenv env && source env/bin/activate && pip3 install -r requirements.txt
 ```
+
+5. Start datamining using your filters
+```shell
+bash /startup/init.sh start <filter 1> <filter 2> ...
+```
+
+6. Check which filters actually allowed by twitter
+```shell
+bash /startup/init.sh status
+```
+
+7. When done, stop the processes with.
+```shell
+bash /startup/init.sh stop
+```
