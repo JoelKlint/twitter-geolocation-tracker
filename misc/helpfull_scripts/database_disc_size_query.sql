@@ -1,0 +1,1 @@
+SELECT 'twitter-geo' as database, pg_size_pretty(pg_database_size('twitter-geo')) as size

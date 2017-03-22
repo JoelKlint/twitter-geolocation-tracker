@@ -1,0 +1,54 @@
+----------
+
+I denna fil kan vi lagra de stacktraces som finns just nu.
+
+Hittar du en ny stacktrace, lägg då in den här.
+Har du fixat en stacktrace, ta då bort den här
+
+----------
+
+
+Traceback (most recent call last):
+  File "twitter_stream.py", line 22, in <module>
+    stream.filter(track=filter)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 445, in filter
+    self._start(async)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 361, in _start
+    self._run()
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 294, in _run
+    raise exception
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 263, in _run
+    self._read_loop(resp)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 324, in _read_loop
+    self._data(next_status_obj)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 297, in _data
+    if self.listener.on_data(data) is False:
+  File "/Users/firefox/git/twitter-geolocation-tracker/tweepy_stream_listener.py", line 67, in on_data
+    for coordinate in coordinate_middleware:
+TypeError: 'float' object is not iterable
+
+
+
+
+
+
+Traceback (most recent call last):
+  File "twitter_stream.py", line 22, in <module>
+    stream.filter(track=filter)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 445, in filter
+    self._start(async)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 361, in _start
+    self._run()
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 294, in _run
+    raise exception
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 263, in _run
+    self._read_loop(resp)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 324, in _read_loop
+    self._data(next_status_obj)
+  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 297, in _data
+    if self.listener.on_data(data) is False:
+  File "/Users/firefox/git/twitter-geolocation-tracker/tweepy_stream_listener.py", line 129, in on_data
+    in_reply_to_status_id, in_reply_to_user_id, lang)
+  File "/Users/firefox/git/twitter-geolocation-tracker/database/database.py", line 30, in save_tweet
+    cur.execute(statement, (id, text, geo, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
+psycopg2.ProgrammingError: can't adapt type 'dict'
