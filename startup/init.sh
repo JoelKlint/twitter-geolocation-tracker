@@ -1,9 +1,10 @@
 #!/bin/bash
 
+
 SCRIPT_DIR=..
 SCRIPT_NAME="$SCRIPT_DIR/twitter_stream.py"
 PID_DIR=./PID_DIR
-
+cd "$(dirname "$0")"
 #Start the data mining, specify the filter(s) as arguments. OBS Twitter seems to be using some throtteling.
 #I could only get 2 filters running at the same time. We need to implement user authentication to get more running.
 start() {
