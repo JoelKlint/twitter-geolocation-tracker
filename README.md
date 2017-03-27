@@ -1,7 +1,6 @@
 # Todo
 - Thread twitter save?
 - Webbinterface
-- Skilja på ren retweet och kommenterad retweet
 - Fixa alla buggar
 - Fixa server
 
@@ -37,3 +36,5 @@ bash /startup/init.sh status
 ```shell
 bash /startup/init.sh stop
 ```
+# Antaganden Twitters API
+- En retweet är en "ren" retweet om attributet "original_tweet_retweet_count" inte är null
