@@ -6,3 +6,7 @@ Anledningen till denna filen är att underlätta för varandra när man arbetar 
 - Om man startar via /startup/init.sh bör man även stoppa allting därigenom. Detta görs via bash /startup/init.sh stop. Detta gör lite cleanup av filer som håller koll på process id och liknande. Töm ej PID_DIR på egen hand, då detta sabbar denna funktionallitet. Skulle du råka köra detta kan du köra "ps" och "kill -9 <pid>" 
 - För att se vilka filter som faktiskt startade kan man köra bash /startup/init.sh status.
 - För att starta om filterna kan man köra bash /startup/init.sh restart
+
+22/3 - Joel:
+- La till misc/current_stacktraces så vi kan hålla koll på vilka buggar som finns. 
+- La till misc/helpfull_scripts/database_disc_size.sh som skriver ut disc space som används utav databas.

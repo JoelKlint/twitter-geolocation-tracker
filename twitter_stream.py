@@ -17,6 +17,8 @@ streamListener = StreamListener()
 stream = tweepy.Stream(auth=api.auth, listener=streamListener)
 
 # Create a stream connection
-filter = ShellArguments().get_filter()
-print("Filter is set to: " + str(filter))
-stream.filter(track=filter)
+args = ShellArguments.get_args()
+if args.verbose: print("Verbose mode on")
+print("Filter is set to: " + str(args.filter))
+
+stream.filter(track=args.filter)

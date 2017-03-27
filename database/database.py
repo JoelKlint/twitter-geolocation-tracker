@@ -1,11 +1,14 @@
 import psycopg2
+from shell_arguments import ShellArguments
 
 class Database:
 
     conn = None
+    verbose = False
 
     def __init__(self, dbname):
         self.conn = psycopg2.connect('dbname={}'.format(dbname))
+        self.verbose = ShellArguments.get_args().verbose
 
     def save_tweet(self,
                    id = None,
@@ -30,7 +33,14 @@ class Database:
         cur.execute(statement, (id, text, geo, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
         self.conn.commit()
         cur.close()
-        # print ('Tweet Saved!')
+        if(self.verbose):
+            print('Saving tweet')
+            print("""
+            id ={0}, text={1}, geo={2}, user_id={3}, longitude={4}, latitude={5}, 
+            place_id={6}, retweeted_id={7}, original_tweet_retweet_count={8}, 
+            in_reply_to_status_id={9}, in_reply_to_user_id={10}, lang={11}
+            """.format(id, text, geo, user_id, longitude, latitude, place_id, 
+            retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
 
     def tweet_exists(self, tweet_id):
         cur = self.conn.cursor()
@@ -65,6 +75,15 @@ class Database:
         cur.execute(statement, (user_id, user_screen_name, user_name, user_location, user_description, user_followers_count, user_friends_count, user_time_zone, user_lang, user_url, user_geo_enabled))
         self.conn.commit()
         cur.close
+        if self.verbose:
+            print("Saving user")
+            print("""
+            user_id={0}, user_screen_name={1}, user_name={2}, user_location={3}, user_description={4}, 
+            user_followers_count={5}, user_friends_count={6}, user_time_zone={7}, 
+            user_lang={8}, user_url={9}, user_geo_enabled={10}
+            """.format(user_id, user_screen_name, user_name, user_location, user_description, 
+            user_followers_count, user_friends_count, user_time_zone, user_lang, user_url, user_geo_enabled))
+
         # print ('User Saved!')
 
     def user_exists(self, user_id):
@@ -121,7 +140,14 @@ class Database:
         cur.execute(statement, data)
         self.conn.commit()
         cur.close
-        # print('User updated')
+        if self.verbose:
+            print("Updating user")
+            print("""
+            user_id={0}, user_screen_name={1}, user_name={2}, user_location={3}, user_description={4}, 
+            user_followers_count={5}, user_friends_count={6}, user_time_zone={7}, 
+            user_lang={8}, user_url={9}, user_geo_enabled={10}
+            """.format(user_id, user_screen_name, user_name, user_location, user_description, 
+            user_followers_count, user_friends_count, user_time_zone, user_lang, user_url, user_geo_enabled))
 
     def save_place(self,
         place_id = None,
@@ -145,8 +171,14 @@ class Database:
         cur.execute(statement, (place_id, place_name, place_country, place_country_code, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code))
         self.conn.commit()
         cur.close
-
-        # print('Place Saved!')
+        if self.verbose:
+            print("Saving place")
+            print("""
+            place_id={0}, place_name={1}, place_country={2}, place_country_code={3}, place_full_name={4}, 
+            place_type={5}, place_street_address={6}, place_locality={7}, place_region,={8} 
+            place_iso3_country_code={9}, place_postal_code={10}
+            """.format(place_id, place_name, place_country, place_country_code, place_full_name, place_type, 
+            place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code))
 
     def place_exists(self, place_id):
         cur = self.conn.cursor()
@@ -202,6 +234,14 @@ class Database:
         cur.execute(statement, data)
         self.conn.commit()
         cur.close
+        if self.verbose:
+        print("Updating place")
+        print("""
+            place_id={0}, place_name={1}, place_country={2}, place_country_code={3}, place_full_name={4},
+            place_type={5}, place_street_address={6}, place_locality={7}, place_region,={8}
+            place_iso3_country_code={9}, place_postal_code={10}
+            """.format(place_id, place_name, place_country, place_country_code, place_full_name, place_type,
+                       place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code))
         # print('Place updated')
 
     def getAllTweetTextAndIds(self):
