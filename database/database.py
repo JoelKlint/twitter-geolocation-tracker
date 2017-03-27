@@ -235,8 +235,8 @@ class Database:
         self.conn.commit()
         cur.close
         if self.verbose:
-        print("Updating place")
-        print("""
+            print("Updating place")
+            print("""
             place_id={0}, place_name={1}, place_country={2}, place_country_code={3}, place_full_name={4},
             place_type={5}, place_street_address={6}, place_locality={7}, place_region,={8}
             place_iso3_country_code={9}, place_postal_code={10}
