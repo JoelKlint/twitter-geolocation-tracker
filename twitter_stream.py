@@ -19,6 +19,6 @@ stream = tweepy.Stream(auth=api.auth, listener=streamListener)
 # Create a stream connection
 args = ShellArguments.get_args()
 if args.verbose: print("Verbose mode on")
-print("Filter is set to: " + str(args.filter))
-
-stream.filter(track=args.filter)
+# print("Filter is set to: " + str(args.filter))
+print('Following @realDonaldTrump')
+stream.filter(follow=['25073877'])
