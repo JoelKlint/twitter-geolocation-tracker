@@ -1,8 +1,6 @@
 # Todo
 - Thread twitter save?
 - Webbinterface
-- Fixa alla buggar
-- Fixa server
 
 # How to setup environment
 1. Set these environment variables
