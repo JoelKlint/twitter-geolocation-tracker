@@ -1,3 +1,9 @@
+# Todo
+- Thread twitter save?
+- Webbinterface
+- Fixa alla buggar
+- Fixa server
+
 # How to setup environment
 1. Set these environment variables
 ```shell
@@ -30,3 +36,5 @@ bash /startup/init.sh status
 ```shell
 bash /startup/init.sh stop
 ```
+# Antaganden Twitters API
+- En retweet är en "ren" retweet om attributet "original_tweet_retweet_count" inte är null

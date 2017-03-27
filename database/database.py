@@ -24,15 +24,16 @@ class Database:
                    original_tweet_retweet_count = None,
                    in_reply_to_status_id = None,
                    in_reply_to_user_id = None,
-                   lang = None):
+                   lang = None,
+                   created_at = None):
 
         cur = self.conn.cursor()
         statement = """
         INSERT INTO tweets
-        (id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        (id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang, created_at)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
-        cur.execute(statement, (id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
+        cur.execute(statement, (id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang, created_at))
         self.conn.commit()
         cur.close()
         if(self.verbose):
@@ -40,9 +41,9 @@ class Database:
             print("""
             id ={0}, text={1}, geo={2}, geo_longitude={3}, geo_latitude={4} user_id={5}, longitude={6}, latitude={7},
             place_id={8}, retweeted_id={9}, original_tweet_retweet_count={10},
-            in_reply_to_status_id={11}, in_reply_to_user_id={12}, lang={13}
+            in_reply_to_status_id={11}, in_reply_to_user_id={12}, lang={13}, created_at={14}
             """.format(id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id,
-            retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
+            retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang, created_at))
 
     def tweet_exists(self, tweet_id):
         cur = self.conn.cursor()
