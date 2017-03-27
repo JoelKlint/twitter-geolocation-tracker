@@ -1,20 +1,44 @@
 import tweepy
 from tweepy.utils import import_simplejson
 from database.database import Database
+from shell_arguments import ShellArguments
+from datetime import datetime
 json = import_simplejson()
 
 class StreamListener(tweepy.StreamListener):
+
+    verbose = False
+
+    def __init__(self):
+        self.verbose = ShellArguments.get_args().verbose
 
     def on_data(self, raw_data):
         # print("-----")
         data = json.loads(raw_data)
 
         # Extract tweet info
-        print ('Running new ')
+        if self.verbose: print ('Running new ')
 
         db = Database('twitter-geo')
 
         id = data.get('id')
+
+        # Stop if is not tweet
+        if id == None:
+            if self.verbose: print('Recieved message that is not a tweet')
+            with open('messages-that-are-not-tweets.log', 'a') as log_file:
+                log_file.write(datetime.now().__str__() + "\n" + str(raw_data) + "\n\n")
+                if self.verbose: print('Saved non-tweet-message to messages-that-are-not-tweets.log')
+            return
+        
+        created_at = data.get('created_at')
+        if created_at != None:
+            created_at = datetime.strptime(created_at, "%a %b %d %H:%M:%S %z %Y")
+        else:
+            print('DATE IS NONE FOR TWEET WITH ID {}'.format(id))
+            print(raw_data)
+
+        # print(created_at)
         if id == None:
             return 1
         text = data.get('text')
@@ -106,12 +130,6 @@ class StreamListener(tweepy.StreamListener):
         user_url = user.get('url')
         user_geo_enabled = user.get('geo_enabled')
 
-        # print ('About to save')
-        # print ('id: ', id, 'text: ', text, 'geo: ', geo, 'user_id: ', user_id, 'longitude: ', longitude,
-            #    'latitude: ', latitude, 'place_id: ', place_id,
-            #    'retweeted_id: ', retweeted_id, 'Original tweet retweet count: ', original_tweet_retweet_count,
-            #    'in reply tweet id: ', in_reply_to_status_id, 'in reply user id: ', in_reply_to_user_id, 'language: ', lang)
-
         if user_id == None:
             print('GOT NULL')
             print(raw_data)
@@ -126,8 +144,8 @@ class StreamListener(tweepy.StreamListener):
                       user_description, user_followers_count, user_friends_count,
                       user_time_zone, user_lang, user_url, user_geo_enabled)
 
-        # print ('Tweet is original')
+        # Save tweet if it does not exist in database
         if not(db.tweet_exists(id)):
             db.save_tweet(id, text, geo, user_id, longitude, latitude, place_id,
                         retweeted_id, original_tweet_retweet_count,
-                        in_reply_to_status_id, in_reply_to_user_id, lang)
+                        in_reply_to_status_id, in_reply_to_user_id, lang, created_at)

@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS user_relations (
 
 CREATE TABLE IF NOT EXISTS tweets (
     id BIGINT,
+    created_at TIMESTAMP,
     text TEXT,
     geo TEXT,
     user_id BIGINT,
