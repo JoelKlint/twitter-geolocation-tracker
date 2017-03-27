@@ -10,7 +10,6 @@ class StreamListener(tweepy.StreamListener):
         data = json.loads(raw_data)
 
         # Extract tweet info
-        print ('Running new ')
 
         db = Database('twitter-geo')
 
@@ -23,6 +22,16 @@ class StreamListener(tweepy.StreamListener):
         for entry in hashtags_array:
             hashtags.append(entry.get('text'))
         geo = data.get('geo')
+        geo_longitude = None
+        geo_latitude = None
+        if geo != None:
+            print ('Got Geo')
+            geo_coordinate = geo.get('coordinates')
+            geo = True
+            print (geo_coordinate)
+            geo_latitude = geo_coordinate[0]
+            geo_longitude = geo_coordinate[1]
+
         longitude = None
         latitude = None
         coordinates = data.get('coordinates')
@@ -35,7 +44,6 @@ class StreamListener(tweepy.StreamListener):
         place = data.get('place')
         place_id = None
         if place != None:
-            # print(place)
             place_name = place.get('name', None)
             place_country = place.get('country', None)
             place_contry_code = place.get('country_code', None)
@@ -57,25 +65,23 @@ class StreamListener(tweepy.StreamListener):
                 place_iso3_country_code = attributes.get('iso3', None)
                 place_postal_code = attributes.get('postal_code', None)
 
-            bounding_box = place.get('bounding_box', None)
-            # print (bounding_box)
-            if bounding_box != None:
-                bound_coordinates = bounding_box.get('coordinates', None)
-                bound_type = bounding_box.get('type', None)
-                if coordinates != None:
-                    for coordinate_middleware in coordinates:
-                        if (isInstance(coordinate_middleware, float)):
-                            bound_longitude = coordinate[0]
-                            bound_latitude = coordinate[1]
-                        else:
-                            for coordinate in coordinate_middleware:
-                            # INSERT INTO BOUNDING BOX TABLE HERE
-                                bound_longitude = coordinate[0]
-                                bound_latitude = coordinate[1]
+
             if db.place_exists(place_id):
                 db.update_place(place_id, place_name, place_country, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code)
             else:
                 db.save_place(place_id, place_name, place_country, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code)
+
+            bounding_box = place.get('bounding_box', None)
+            if bounding_box != None:
+                bound_coordinates = bounding_box.get('coordinates', None)
+                bound_type = bounding_box.get('type', None)
+                if bound_coordinates != None:
+                    for coordinate_middleware in bound_coordinates:
+                        for coordinate in coordinate_middleware:
+                            bound_longitude = coordinate[0]
+                            bound_latitude = coordinate[1]
+                            db.insertBoundingBox(place_id, bound_longitude, bound_latitude, bound_type)
+
 
 
     #Handle retweets
@@ -128,6 +134,6 @@ class StreamListener(tweepy.StreamListener):
 
         # print ('Tweet is original')
         if not(db.tweet_exists(id)):
-            db.save_tweet(id, text, geo, user_id, longitude, latitude, place_id,
+            db.save_tweet(id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id,
                         retweeted_id, original_tweet_retweet_count,
                         in_reply_to_status_id, in_reply_to_user_id, lang)

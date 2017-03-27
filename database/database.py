@@ -14,6 +14,8 @@ class Database:
                    id = None,
                    text = None,
                    geo = None,
+                   geo_longitude = None,
+                   geo_latitude = None,
                    user_id = None,
                    longitude = None,
                    latitude = None,
@@ -27,19 +29,19 @@ class Database:
         cur = self.conn.cursor()
         statement = """
         INSERT INTO tweets
-        (id, text, geo, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        (id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
-        cur.execute(statement, (id, text, geo, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
+        cur.execute(statement, (id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
         self.conn.commit()
         cur.close()
         if(self.verbose):
             print('Saving tweet')
             print("""
-            id ={0}, text={1}, geo={2}, user_id={3}, longitude={4}, latitude={5}, 
-            place_id={6}, retweeted_id={7}, original_tweet_retweet_count={8}, 
-            in_reply_to_status_id={9}, in_reply_to_user_id={10}, lang={11}
-            """.format(id, text, geo, user_id, longitude, latitude, place_id, 
+            id ={0}, text={1}, geo={2}, geo_longitude={3}, geo_latitude={4} user_id={5}, longitude={6}, latitude={7},
+            place_id={8}, retweeted_id={9}, original_tweet_retweet_count={10},
+            in_reply_to_status_id={11}, in_reply_to_user_id={12}, lang={13}
+            """.format(id, text, geo, geo_longitude, geo_latitude, user_id, longitude, latitude, place_id,
             retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
 
     def tweet_exists(self, tweet_id):
@@ -243,6 +245,29 @@ class Database:
             """.format(place_id, place_name, place_country, place_country_code, place_full_name, place_type,
                        place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code))
         # print('Place updated')
+
+    def insertBoundingBox(self,
+        place_id,
+        longitude,
+        latitude,
+        bound_type):
+        cur = self.conn.cursor()
+        statement = """
+        INSERT INTO place_bounding_box_coordinate
+        (place_id, longitude, latitude, bound_type)
+        VALUES(%s, %s, %s, %s);
+        """
+        cur.execute(statement, (place_id, longitude, latitude, bound_type))
+        self.conn.commit()
+        cur.close
+        if self.verbose:
+            print("Saving bounding box")
+            print("""
+            place_id={0}, longitude={1}, latitude={2}, bound_type={3}
+            """.format(place_id, longitude, latitude, bound_type))
+
+
+
 
     def getAllTweetTextAndIds(self):
         cur = self.conn.cursor()
