@@ -16,10 +16,12 @@ CREATE TABLE IF NOT EXISTS places (
 );
 
 CREATE TABLE IF NOT EXISTS place_bounding_box_coordinate (
+    id SERIAL,
     place_id TEXT,
     longitude DECIMAL,
     latitude DECIMAL,
-    PRIMARY KEY(place_id, longitude, latitude),
+    bound_type TEXT,
+    PRIMARY KEY(id),
     FOREIGN KEY(place_id) REFERENCES places(place_id)
 );
 
@@ -50,10 +52,12 @@ CREATE TABLE IF NOT EXISTS tweets (
     id BIGINT,
     created_at TIMESTAMP,
     text TEXT,
-    geo TEXT,
+    geo BOOLEAN,
     user_id BIGINT,
     longitude DECIMAL,
     latitude DECIMAL,
+    geo_longitude DECIMAL,
+    geo_latitude DECIMAL,
     place_id TEXT,
     retweeted_id BIGINT,
     original_tweet_retweet_count BIGINT,
