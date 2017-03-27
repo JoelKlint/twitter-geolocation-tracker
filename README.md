@@ -1,3 +1,12 @@
+#
+- Thread twitter save?
+- Webbinterface
+- Skilja på ren retweet och kommenterad retweet
+- Timestamps på tweets
+- Fixa alla buggar
+- Fixa server
+- 
+
 # How to setup environment
 1. Set these environment variables
 ```shell
