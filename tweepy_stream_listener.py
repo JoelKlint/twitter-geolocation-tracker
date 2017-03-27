@@ -10,7 +10,7 @@ class StreamListener(tweepy.StreamListener):
         data = json.loads(raw_data)
 
         # Extract tweet info
-
+        print ('Running new ')
 
         db = Database('twitter-geo')
 
@@ -64,10 +64,14 @@ class StreamListener(tweepy.StreamListener):
                 bound_type = bounding_box.get('type', None)
                 if coordinates != None:
                     for coordinate_middleware in coordinates:
-                        for coordinate in coordinate_middleware:
-                            # INSERT INTO BOUNDING BOX TABLE HERE
+                        if (isInstance(coordinate_middleware, float)):
                             bound_longitude = coordinate[0]
                             bound_latitude = coordinate[1]
+                        else:
+                            for coordinate in coordinate_middleware:
+                            # INSERT INTO BOUNDING BOX TABLE HERE
+                                bound_longitude = coordinate[0]
+                                bound_latitude = coordinate[1]
             if db.place_exists(place_id):
                 db.update_place(place_id, place_name, place_country, place_full_name, place_type, place_street_address, place_locality, place_region, place_iso3_country_code, place_postal_code)
             else:

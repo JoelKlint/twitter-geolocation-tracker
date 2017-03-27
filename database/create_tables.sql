@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS tweets (
     in_reply_to_status_id BIGINT,
     in_reply_to_user_id BIGINT,
     lang TEXT,
+    detected_language TEXT,
     PRIMARY KEY(id),
     FOREIGN KEY(place_id) REFERENCES places(place_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)

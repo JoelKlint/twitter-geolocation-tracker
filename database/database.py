@@ -203,3 +203,27 @@ class Database:
         self.conn.commit()
         cur.close
         # print('Place updated')
+
+    def getAllTweetTextAndIds(self):
+        cur = self.conn.cursor()
+        statement = '''
+        SELECT id, text from tweets;
+        '''
+
+        cur.execute(statement)
+        self.conn.commit()
+        textsAndIds = cur.fetchall()
+        cur.close()
+        return textsAndIds
+
+    def updateDetectedLanguage(self, id, detected_language):
+        cur = self.conn.cursor()
+        statement = '''
+        UPDATE tweets
+        SET detected_language = %s
+        Where id=%s;
+        '''
+        data = [detected_language, id]
+        cur.execute(statement, data)
+        self.conn.commit()
+        cur.close()
