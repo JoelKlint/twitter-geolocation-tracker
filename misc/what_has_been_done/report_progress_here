@@ -10,3 +10,6 @@ Anledningen till denna filen är att underlätta för varandra när man arbetar 
 22/3 - Joel:
 - La till misc/current_stacktraces så vi kan hålla koll på vilka buggar som finns. 
 - La till misc/helpfull_scripts/database_disc_size.sh som skriver ut disc space som används utav databas.
+
+28/3 - Oscar
+- Implementera en barebone function för att displaya 1000 inlägg ur databasen på webben med hjälp av flask. 
