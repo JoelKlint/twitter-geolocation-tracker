@@ -1,0 +1,25 @@
+{% block content %}
+<h1>Select the table you want to view</h1>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="input-group">
+            <div class="input-group-btn">
+                <div class="dropdown">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Tables<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    {% for table in tables %}
+                    <li><a href=/search/{{table}}>{{table}}</a></li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div><!-- /btn-group -->
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+</div>
+<script type="text/javascript">
+    $(".dropdown-menu li a").click(function(){
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+        $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    });
+</script>
+{% endblock %}

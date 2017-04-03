@@ -1,0 +1,23 @@
+{% block content %}
+<h1>Table: {{data.table}}</h1>
+<table class="table table-condensed">
+    <thead>
+    <tr>
+    {% for columns in data.cols %}
+        <th>{{columns}}</th>
+    {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        {% for entry in data.entries%}
+        {% for datapoint in entry%}
+        <td>{{datapoint}}</td>
+        {% endfor %}
+    </tr>
+        {% endfor%}
+
+    </tbody>
+</table>
+
+{% endblock %}
