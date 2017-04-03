@@ -7,6 +7,24 @@ DB_NAME = 'twitter-geo'
 
 print('Connection Completed')
 
+@app.route("/statistics", methods=['GET'])
+def statistics():
+    db = Database(DB_NAME)
+
+    tweet_count = db.get_total_tweet_count()
+    retweet_count = db.get_total_clean_retweet_count()
+    commented_retweet_count = db.get_total_commented_retweet_count()
+    reply_tweet_count = db.get_total_reply_count()
+    total_mention_count = db.get_total_mention_count()
+
+
+    return render_template('statistics.html', 
+        retweet_count=retweet_count, 
+        tweet_count=tweet_count,
+        commented_retweet_count=commented_retweet_count,
+        reply_tweet_count=reply_tweet_count,
+        total_mention_count=total_mention_count)
+
 @app.route("/", methods=['GET'])
 def index():
     db = Database(DB_NAME)
