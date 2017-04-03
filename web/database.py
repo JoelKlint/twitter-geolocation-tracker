@@ -62,10 +62,9 @@ class Database:
         statement = """
             SELECT count(*)
             FROM tweets
-            INNER JOIN trumps_tweets
-            ON(tweets.retweeted_id = trumps_tweets.id)
-            WHERE tweets.original_tweet_retweet_count IS NOT NULL
+            WHERE text ILIKE 'RT @realDonaldTrump%'
         """
+
         cur.execute(statement)
         retweet_count = cur.fetchone()
 
@@ -76,11 +75,9 @@ class Database:
         cur = self.conn.cursor()
 
         statement = """
-            SELECT count(*)
-            FROM tweets
-            INNER JOIN trumps_tweets
-            ON(tweets.retweeted_id = trumps_tweets.id)
-            WHERE tweets.original_tweet_retweet_count IS NULL
+                SELECT count(*) 
+                FROM tweets 
+                WHERE text ILIKE '@realDonaldTrump%https://t.co/%'
         """
         cur.execute(statement)
         commented_retweet_count = cur.fetchone()
@@ -92,10 +89,16 @@ class Database:
         cur = self.conn.cursor()
 
         statement = """
-            SELECT count(*)
-            FROM tweets
-            INNER JOIN trumps_tweets
-            ON(tweets.in_reply_to_status_id = trumps_tweets.id)
+            SELECT
+                (SELECT count(*)
+                FROM tweets
+                WHERE text ILIKE '@realDonaldTrump%'
+                AND in_reply_to_user_id IN (SELECT user_id FROM trumps_tweets LIMIT 1))
+                -
+                (SELECT count(*)
+                FROM tweets
+                WHERE text ILIKE '@realDonaldTrump%https://t.co/%')
+            AS total_count
         """
         cur.execute(statement)
         commented_retweet_count = cur.fetchone()
@@ -107,14 +110,16 @@ class Database:
         cur = self.conn.cursor()
 
         statement = """
-            SELECT count(*)
-            FROM tweets
-            WHERE in_reply_to_user_id IN (
-                SELECT user_id
-                FROM trumps_tweets
-                LIMIT 1
-            )
-            AND in_reply_to_status_id IS NULL
+            SELECT
+                (SELECT count(*)
+                FROM tweets
+                WHERE text ILIKE '@realDonaldTrump%'
+                AND in_reply_to_user_id NOT IN (SELECT user_id FROM trumps_tweets LIMIT 1))
+                -
+                (SELECT count(*)
+                FROM tweets
+                WHERE text ILIKE '@realDonaldTrump%https://t.co/%')
+            AS total_count
         """
         cur.execute(statement)
         commented_retweet_count = cur.fetchone()
