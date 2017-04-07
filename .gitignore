@@ -6,3 +6,4 @@ startup/PID_DIR/*
 .DS_Store
 *.log
 web/.idea
+twitter-geo.dump
