@@ -21,9 +21,9 @@ class Database(Database):
         cur = self.conn.cursor()
 
         statement = """
-                SELECT count(*) 
-                FROM tweets 
-                WHERE text ILIKE '@realDonaldTrump%https://t.co/%'
+            SELECT count(*) 
+            FROM tweets 
+            WHERE text ILIKE '@realDonaldTrump%https://t.co/%'
         """
         cur.execute(statement)
         commented_retweet_count = cur.fetchone()

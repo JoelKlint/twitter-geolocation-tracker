@@ -3,14 +3,14 @@
 {% block content %}
 
 <div>Tweet count: {{ tweet_count }}</div>
-<div>Retweet count: {{ retweet_count }}</div>
+<div>Clean retweet count: {{ clean_retweet_count }}</div>
 <div>Commented retweets count: {{ commented_retweet_count }}</div>
 <div>Reply tweets count: {{ reply_tweet_count }}</div>
 <div>Mention tweets count: {{ total_mention_count }}</div>
 
 <br>
 
-<div>Retweet percentage: {{ (retweet_count/tweet_count)|round(3) }}%</div>
+<div>Clean retweet percentage: {{ (clean_retweet_count/tweet_count)|round(3) }}%</div>
 <div>Commented retweet percentage: {{ (commented_retweet_count/tweet_count)|round(3) }}%</div>
 <div>Reply tweet percentage: {{ (reply_tweet_count/tweet_count)|round(3) }}%</div>
 <div>Mention tweet percentage: {{ (total_mention_count/tweet_count)|round(3) }}%</div>
