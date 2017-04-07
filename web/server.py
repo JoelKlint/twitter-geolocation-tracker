@@ -17,6 +17,7 @@ def statistics():
     commented_retweet_count = db.get_total_commented_retweet_count()
     reply_tweet_count = db.get_total_reply_count()
     total_mention_count = db.get_total_mention_count()
+    original_tweets_count = db.get_original_tweets_count()
 
 
     return render_template('statistics.html', 
@@ -24,7 +25,9 @@ def statistics():
         clean_retweet_count=clean_retweet_count, 
         commented_retweet_count=commented_retweet_count,
         reply_tweet_count=reply_tweet_count,
-        total_mention_count=total_mention_count)
+        total_mention_count=total_mention_count,
+        original_tweets_count=original_tweets_count
+    )
 
 
 @app.route("/", methods=['GET'])
