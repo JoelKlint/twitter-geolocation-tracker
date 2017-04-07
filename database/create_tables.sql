@@ -76,3 +76,6 @@ CREATE TABLE IF NOT EXISTS tweet_hashtags (
     PRIMARY KEY(tweet_id, hashtag),
     FOREIGN KEY(tweet_id) REFERENCES tweets(id)
 );
+
+CREATE VIEW trumps_tweets AS
+SELECT * FROM tweets WHERE user_id = 25073877;

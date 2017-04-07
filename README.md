@@ -35,4 +35,23 @@ bash /startup/init.sh status
 bash /startup/init.sh stop
 ```
 # Antaganden Twitters API
+- retweeted_id                  -->     tweeten är en retweet
+- in_reply_to_user_id           -->     någon har blivit mentioned
+- in_reply_to_status_id         -->     tweeten är ett svar på en annan tweet
+- original_tweet_retweet_count  -->     finns bara på kommenterade retweets
+
 - En retweet är en "ren" retweet om attributet "original_tweet_retweet_count" inte är null
+- En retweet är en "kommenterad" retweet om attributet "original_tweet_retweet_count" är null
+
+
+# Statements för att hämta ut statistik
+SELECT count(*) FROM tweets WHERE retweeted_id IS NOT NULL AND in_reply_to_status_id IS NOT NULL AND in_reply_to_user_id IS NOT NULL;
+
+SELECT count(*) FROM tweets WHERE retweeted_id IS NOT NULL AND in_reply_to_status_id IS NOT NULL AND in_reply_to_user_id IS NULL;
+SELECT count(*) FROM tweets WHERE retweeted_id IS NOT NULL AND in_reply_to_status_id IS NULL AND in_reply_to_user_id IS NOT NULL;
+SELECT count(*) FROM tweets WHERE retweeted_id IS NOT NULL AND in_reply_to_status_id IS NULL AND in_reply_to_user_id IS NULL;
+
+SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NOT NULL AND in_reply_to_user_id IS NOT NULL;
+SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NOT NULL AND in_reply_to_user_id IS NULL;
+SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NULL AND in_reply_to_user_id IS NOT NULL;
+SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NULL AND in_reply_to_user_id IS NULL;

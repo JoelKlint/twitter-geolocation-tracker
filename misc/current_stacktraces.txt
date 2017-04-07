@@ -8,47 +8,93 @@ Har du fixat en stacktrace, ta då bort den här
 ----------
 
 
+
+------------- HITTADE NÄR VI SAMLADE DATA ------------------
+Saving tweet
+
+            id =848048985575223296, text=RT @realDonaldTrump: It is an exciting time for our country!
+#WeeklyAddress #ConfirmGorsuch https://t.co/tP4bkvTOBq, geo=None, geo_longitude=None, geo_latitude=None user_id=840981007687925760, longitude=None, latitude=None,
+            place_id=None, retweeted_id=847878820220858369, original_tweet_retweet_count=9606,
+            in_reply_to_status_id=None, in_reply_to_user_id=None, lang=en, created_at=2017-04-01 05:46:48+00:00
+            
+Running new 
 Traceback (most recent call last):
-  File "twitter_stream.py", line 22, in <module>
-    stream.filter(track=filter)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 445, in filter
+  File "twitter_stream.py", line 24, in <module>
+    stream.filter(follow=['25073877'])
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 445, in filter
     self._start(async)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 361, in _start
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 361, in _start
     self._run()
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 294, in _run
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 294, in _run
     raise exception
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 263, in _run
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 263, in _run
     self._read_loop(resp)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 324, in _read_loop
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 324, in _read_loop
     self._data(next_status_obj)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 297, in _data
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 297, in _data
     if self.listener.on_data(data) is False:
-  File "/Users/firefox/git/twitter-geolocation-tracker/tweepy_stream_listener.py", line 67, in on_data
-    for coordinate in coordinate_middleware:
-TypeError: 'float' object is not iterable
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/tweepy_stream_listener.py", line 153, in on_data
+    user_time_zone, user_lang, user_url, user_geo_enabled)
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/database/database.py", line 78, in save_user
+    cur.execute(statement, (user_id, user_screen_name, user_name, user_location, user_description, user_followers_count, user_friends_count, user_time_zone, user_lang, user_url, user_geo_enabled))
+ValueError: A string literal cannot contain NUL (0x00) characters.
 
 
+------------- HITTADES NÄR VI SAMLADE DATA -----------------
+Running new 
+Saving user
 
+            user_id=3054849559, user_screen_name=AdaBreen932, user_name=Adα Asnιcαr, user_location=None, user_description=None, 
+            user_followers_count=17, user_friends_count=402, user_time_zone=International Date Line West, 
+            user_lang=en, user_url=None, user_geo_enabled=False
+            
+Saving tweet
 
-
-
+            id =847937027958026241, text=RT @realDonaldTrump: The failing @nytimes has disgraced the media world. Gotten me wrong for two solid years. Change libel laws? https://t.…, geo=None, geo_longitude=None, geo_latitude=None user_id=3054849559, longitude=None, latitude=None,
+            place_id=None, retweeted_id=847455180912181249, original_tweet_retweet_count=12427,
+            in_reply_to_status_id=None, in_reply_to_user_id=None, lang=en, created_at=2017-03-31 22:21:56+00:00
+            
 Traceback (most recent call last):
-  File "twitter_stream.py", line 22, in <module>
-    stream.filter(track=filter)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 445, in filter
+  File "twitter_stream.py", line 24, in <module>
+    stream.filter(follow=['25073877'])
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 445, in filter
     self._start(async)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 361, in _start
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 361, in _start
     self._run()
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 294, in _run
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 294, in _run
     raise exception
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 263, in _run
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 263, in _run
     self._read_loop(resp)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 324, in _read_loop
-    self._data(next_status_obj)
-  File "/Users/firefox/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 297, in _data
-    if self.listener.on_data(data) is False:
-  File "/Users/firefox/git/twitter-geolocation-tracker/tweepy_stream_listener.py", line 129, in on_data
-    in_reply_to_status_id, in_reply_to_user_id, lang)
-  File "/Users/firefox/git/twitter-geolocation-tracker/database/database.py", line 30, in save_tweet
-    cur.execute(statement, (id, text, geo, user_id, longitude, latitude, place_id, retweeted_id, original_tweet_retweet_count, in_reply_to_status_id, in_reply_to_user_id, lang))
-psycopg2.ProgrammingError: can't adapt type 'dict'
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 313, in _read_loop
+    line = buf.read_line().strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
+
+
+------------- HITTADES NÄR VI SAMLADE DATA -----------------
+Running new 
+Updating user
+
+            user_id=1618751462, user_screen_name=petedcgolda, user_name=searchin400, user_location=Texas, USA, user_description=None, 
+            user_followers_count=418, user_friends_count=372, user_time_zone=None, 
+            user_lang=en, user_url=None, user_geo_enabled=False
+            
+Saving tweet
+
+            id =847611830310588416, text=@realDonaldTrump @nytimes you are a disgrace to America..you plan for America to file bankruptcy?? Your way out??, geo=None, geo_longitude=None, geo_latitude=None user_id=1618751462, longitude=None, latitude=None,
+            place_id=None, retweeted_id=None, original_tweet_retweet_count=None,
+            in_reply_to_status_id=847455180912181249, in_reply_to_user_id=25073877, lang=en, created_at=2017-03-31 00:49:42+00:00
+            
+Traceback (most recent call last):
+  File "twitter_stream.py", line 24, in <module>
+    stream.filter(follow=['25073877'])
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 445, in filter
+    self._start(async)
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 361, in _start
+    self._run()
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 294, in _run
+    raise exception
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 263, in _run
+    self._read_loop(resp)
+  File "/Users/twittergeo/git/twitter-geolocation-tracker/env/lib/python3.6/site-packages/tweepy/streaming.py", line 313, in _read_loop
+    line = buf.read_line().strip()
+AttributeError: 'NoneType' object has no attribute 'strip'
