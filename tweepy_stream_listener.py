@@ -20,6 +20,8 @@ class StreamListener(tweepy.StreamListener):
 
         if self.verbose: print ('Running new ')
 
+        print (raw_data)
+
         db = Database('twitter-geo')
 
         id = data.get('id')

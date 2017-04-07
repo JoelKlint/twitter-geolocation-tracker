@@ -15,14 +15,17 @@ def index():
 
 @app.route("/search/", methods=['GET'])
 @app.route("/search/<table>", methods=['GET'])
-def searchTemplate(table=None):
+def searchTemplate(table='users'):
     db = Database(DB_NAME)
     tables = db.selectAllTables()
     if (table):
         data = db.generateTableData(table)
     return render_template('search.html', tables=tables, data=data)
 
-
+@app.route("/test")
+def test():
+    db = Database(DB_NAME)
+    db.nbrOfUsersWithLocation()
 
 
 app.run(debug=True)
