@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from database import Database
+from database_text_searcher import Database
 app = Flask(__name__)
 
 
