@@ -293,3 +293,43 @@ class Database:
         cur.execute(statement, data)
         self.conn.commit()
         cur.close()
+
+
+
+    def loadCountries(self,
+                      geonameid = None,
+                      name = None,
+                      asciiname = None,
+                      alternatenames = None,
+                      latitude = None,
+                      longitude = None,
+                      feature_class = None,
+                      feature_code = None,
+                      country_code = None,
+                      cc2 = None,
+                      admin1_code = None,
+                      admin2_code = None,
+                      admin3_code = None,
+                      admin4_code = None,
+                      population = None,
+                      elevation = None,
+                      dem = None,
+                      timezone = None,
+                      modification_date = None):
+
+
+        cur = self.conn.cursor()
+        statement = """
+        INSERT INTO geonames
+        (geonameid, name, asciiname, alternatenames, latitude,
+        longitude, feature_class, feature_code, country_code,
+         cc2, admin1_code, admin2_code, admin3_code, admin4_code,
+         population, elevation, dem, timezone, modification_date)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+        cur.execute(statement, (geonameid, name, asciiname, alternatenames, latitude, longitude,
+                                feature_class, feature_code, country_code,
+                                cc2, admin1_code, admin2_code, admin3_code, admin4_code,
+                                population, elevation, dem, timezone, modification_date))
+        self.conn.commit()
+        cur.close()

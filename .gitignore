@@ -7,3 +7,4 @@ startup/PID_DIR/*
 *.log
 web/.idea
 twitter-geo.dump
+allCountries.txt
