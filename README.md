@@ -55,3 +55,7 @@ SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id
 SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NOT NULL AND in_reply_to_user_id IS NULL;
 SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NULL AND in_reply_to_user_id IS NOT NULL;
 SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NULL AND in_reply_to_user_id IS NULL;
+
+
+# SELECT ALL FILTERED LOCATIONS:
+select user_location, name, ratio, country_code from users inner join filtered_user_locations using (user_id) inner join geonames using(geonameid);

@@ -1,7 +1,7 @@
 from database import Database
 
 class Database(Database):
-
+#DO NOT USE THIS ITS NOT WORKING!!!!!!!!!!!!!!!!!
 
 #retweeted_id                  -->     tweeten är en retweet
 #in_reply_to_user_id           -->     någon har blivit mentioned
@@ -19,7 +19,7 @@ class Database(Database):
 #SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NOT NULL AND in_
 #SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NULL AND in_repl
 #SELECT count(*) FROM tweets WHERE retweeted_id IS NULL AND in_reply_to_status_id IS NULL AND in_repl
-
+'''
     def get_total_clean_retweet_count(self):
         cur = self.conn.cursor()
 
@@ -77,4 +77,5 @@ class Database(Database):
         commented_retweet_count = cur.fetchone()
 
         cur.close()
-        return commented_retweet_count[0]
+        return comme nted_retweet_count[0]
+'''

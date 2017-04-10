@@ -333,3 +333,52 @@ class Database:
                                 population, elevation, dem, timezone, modification_date))
         self.conn.commit()
         cur.close()
+
+    def select_user_locations(self):
+        cur = self.conn.cursor()
+        statement = """
+        SELECT user_id, user_location
+        FROM users
+        WHERE user_location IS NOT NULL
+        AND user_id NOT IN (SELECT user_id from filtered_user_locations)
+        LIMIT 100;
+        """
+        cur.execute(statement)
+        self.conn.commit()
+        result_tuple = cur.fetchall()
+        result_array = []
+        cur.close()
+        for result in result_tuple:
+            result_array.append([result[0], result[1]])
+
+        return result_array
+
+    def select_database_locations(self):
+        cur = self.conn.cursor()
+        statement = """
+        SELECT DISTINCT geonameid, name, asciiname, latitude, longitude
+        FROM geonames
+        WHERE feature_code = 'PPL';
+        """
+        cur.execute(statement)
+        self.conn.commit()
+        result_tuple = cur.fetchall()
+        result_array = []
+        cur.close()
+        i = 0
+        for result in result_tuple:
+            if (i%100000 == 0):
+                print("We have selected: ", i)
+            result_array.append([result[0], result[1], result[2], float(result[3]), float(result[4])])
+            i+=1
+        return result_array
+
+    def set_filtered_location(self, user_id, geonameid, ratio):
+        cur = self.conn.cursor()
+        statement = """
+        INSERT INTO filtered_user_locations(user_id, geonameid, ratio)
+        VALUES (%s, %s, %s);
+        """
+        cur.execute(statement, (user_id, geonameid, ratio))
+        self.conn.commit()
+        cur.close()
