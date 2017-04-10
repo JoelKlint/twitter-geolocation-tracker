@@ -2,17 +2,40 @@
 
 {% block content %}
 
-<div>Tweet count: {{ tweet_count }}</div>
-<div>Retweet count: {{ retweet_count }}</div>
-<div>Commented retweets count: {{ commented_retweet_count }}</div>
-<div>Reply tweets count: {{ reply_tweet_count }}</div>
-<div>Mention tweets count: {{ total_mention_count }}</div>
+<div>True total tweet count: {{ tweet_count }}</div>
 
 <br>
 
-<div>Retweet percentage: {{ (retweet_count/tweet_count)|round(3) }}%</div>
-<div>Commented retweet percentage: {{ (commented_retweet_count/tweet_count)|round(3) }}%</div>
-<div>Reply tweet percentage: {{ (reply_tweet_count/tweet_count)|round(3) }}%</div>
-<div>Mention tweet percentage: {{ (total_mention_count/tweet_count)|round(3) }}%</div>
+<div>Clean retweet count: {{ clean_retweet_count }}</div>
+<div>Commented retweets count: {{ commented_retweet_count }}</div>
+<div>Reply tweets count: {{ reply_tweet_count }}</div>
+<div>Mention tweets count: {{ total_mention_count }}</div>
+<div>Original tweets count: {{ original_tweets_count }}</div>
+
+<br>
+
+{% set tot_after_cat = 
+    clean_retweet_count + 
+    commented_retweet_count + 
+    reply_tweet_count + 
+    total_mention_count + 
+    original_tweets_count 
+%}
+<div>Accumulated tweets after categorisation: {{tot_after_cat}}</div>
+<div>Lost tweets: {{tweet_count - tot_after_cat}}</div>
+
+<br>
+
+{% set clean_retweet_frac = clean_retweet_count/tweet_count %}
+{% set commented_retweet_frac = commented_retweet_count/tweet_count %}
+{% set reply_tweet_frac = reply_tweet_count/tweet_count %}
+{% set total_mention_frac = total_mention_count/tweet_count %}
+{% set original_tweets_frac = original_tweets_count/tweet_count %}
+
+<div>Clean retweet percentage: {{ clean_retweet_frac }}%</div>
+<div>Commented retweet percentage: {{ commented_retweet_frac }}%</div>
+<div>Reply tweet percentage: {{ reply_tweet_frac }}%</div>
+<div>Mention tweet percentage: {{ total_mention_frac }}%</div>
+<div>Original tweet percentage: {{ original_tweets_frac }}%</div>
 
 {% endblock %}
