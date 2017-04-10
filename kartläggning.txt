@@ -1,0 +1,8 @@
+HÄMTA UT POSITION UR GOOGLE MAPS HTTP RESPONSE
+
+Gör ett request till:
+https://www.google.se/maps?q=<INSERT STRING HERE>
+
+window.APP_INITIALIZATION_STATE[2][0][0][7][1][1] innehåller en sträng med plats
+window.APP_INITIALIZATION_STATE[2][0][0][7][1][3][3] innehåller Longitude
+window.APP_INITIALIZATION_STATE[2][0][0][7][1][3][2] innehåller Latitude
