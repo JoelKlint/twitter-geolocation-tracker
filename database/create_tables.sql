@@ -77,5 +77,27 @@ CREATE TABLE IF NOT EXISTS tweet_hashtags (
     FOREIGN KEY(tweet_id) REFERENCES tweets(id)
 );
 
+CREATE TABLE IF NOT EXISTS geonames (
+    geonameid INT,
+    name VARCHAR (200),
+    asciiname VARCHAR (200),
+    alternatenames VARCHAR (10000),
+    latitude DECIMAL,
+    longitude DECIMAL,
+    feature_class CHAR(1),
+    feature_code VARCHAR (10),
+    country_code VARCHAR (2),
+    cc2 VARCHAR (200),
+    admin1_code VARCHAR (20),
+    admin2_code VARCHAR (80),
+    admin3_code VARCHAR (20),
+    admin4_code VARCHAR (20),
+    population BIGINT,
+    elevation INTEGER,
+    dem INTEGER,
+    timezone VARCHAR (40),
+    modification_date date
+);
+
 CREATE VIEW trumps_tweets AS
 SELECT * FROM tweets WHERE user_id = 25073877;
