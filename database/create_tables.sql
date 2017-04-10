@@ -96,7 +96,8 @@ CREATE TABLE IF NOT EXISTS geonames (
     elevation INTEGER,
     dem INTEGER,
     timezone VARCHAR (40),
-    modification_date date
+    modification_date date,
+    PRIMARY KEY(geonameid)
 );
 
 CREATE VIEW trumps_tweets AS
