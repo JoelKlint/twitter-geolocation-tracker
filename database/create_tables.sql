@@ -103,11 +103,9 @@ CREATE VIEW trumps_tweets AS
 SELECT * FROM tweets WHERE user_id = 25073877;
 
 CREATE TABLE IF NOT EXISTS filtered_user_locations(
-  id INTEGER,
   user_id BIGINT,
   geonameid INT,
   ratio DECIMAL,
-  PRIMARY KEY (id),
   FOREIGN KEY(user_id) REFERENCES users(user_id),
   FOREIGN KEY(geonameid) REFERENCES geonames(geonameid)
 );
