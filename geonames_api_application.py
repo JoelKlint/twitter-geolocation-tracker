@@ -47,7 +47,7 @@ for location in some_user_locations:
     throttle_count += 1
 
     if throttle_count == 1950:
-        time.sleep(60)
+        time.sleep(62)
 
     user_id = location[0]
     user_location = location[1]
