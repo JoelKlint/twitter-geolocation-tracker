@@ -8,3 +8,5 @@ startup/PID_DIR/*
 web/.idea
 twitter-geo.dump
 allCountries.txt
+twitter-with-geonames.dump
+twitter-with-preprocessed.dump
