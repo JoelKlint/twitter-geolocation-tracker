@@ -339,9 +339,7 @@ class Database:
         statement = """
         SELECT user_id, user_location
         FROM users
-        WHERE user_location IS NOT NULL
-        AND user_id NOT IN (SELECT user_id from filtered_user_locations)
-        LIMIT 100;
+        WHERE user_location IS NOT NULL;
         """
         cur.execute(statement)
         self.conn.commit()
@@ -352,6 +350,23 @@ class Database:
             result_array.append([result[0], result[1]])
 
         return result_array
+
+
+    def get_all_users_with_location(self):
+        cur = self.conn.cursor()
+
+        statement = """
+            SELECT user_id, user_location
+            FROM users
+            WHERE user_location IS NOT NULL
+        """
+
+        cur.execute(statement)
+        self.conn.commit()
+        result_tuple = cur.fetchall()
+        cur.close()
+
+        return result_tuple
 
     def select_database_locations(self):
         cur = self.conn.cursor()
@@ -380,5 +395,50 @@ class Database:
         VALUES (%s, %s, %s);
         """
         cur.execute(statement, (user_id, geonameid, ratio))
+        self.conn.commit()
+        cur.close()
+
+
+    def insert_into_preprocessed(self, location, user_id, rest=None):
+        cur = self.conn.cursor()
+        if rest != None:
+            statement = """
+                UPDATE users
+                SET preprocessed_location = %s,
+                    preprocessed_rest = %s
+                WHERE user_id = %s
+            """
+            cur.execute(statement, (location, rest, user_id))
+        else:
+            statement = """
+                UPDATE users
+                SET preprocessed_location = %s,
+                    preprocessed_rest = DEFAULT
+                WHERE user_id = %s
+            """
+            cur.execute(statement, (location, user_id))
+        self.conn.commit()
+        cur.close()
+
+    def select_preprocessed_data_from_user_id(self, user_id):
+        cur = self.conn.cursor()
+        statement = '''
+        SELECT preprocessed_location, preprocessed_rest FROM users WHERE user_id = %s;
+        '''
+
+        cur.execute(statement, ([user_id]))
+        self.conn.commit()
+        preprocessed_data = cur.fetchone()
+        cur.close()
+        return preprocessed_data
+
+    def insert_into_identified_via_geonames(self, user_id, geonameid, country_name):
+        cur = self.conn.cursor()
+        statement = '''
+        INSERT INTO identified_via_geonames(user_id, geonameid, country_name)
+        VALUES (%s, %s, %s)
+        '''
+
+        cur.execute(statement, ([user_id, geonameid, country_name]))
         self.conn.commit()
         cur.close()

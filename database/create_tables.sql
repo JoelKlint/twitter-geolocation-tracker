@@ -110,3 +110,11 @@ CREATE TABLE IF NOT EXISTS filtered_user_locations(
   FOREIGN KEY(user_id) REFERENCES users(user_id),
   FOREIGN KEY(geonameid) REFERENCES geonames(geonameid)
 );
+
+CREATE TABLE IF NOT EXISTS identified_via_geonames (
+    geonameid INT,
+    user_id BIGINT,
+    country_name VARCHAR (200),
+    FOREIGN KEY (geonameid) REFERENCES geonames(geonameid),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);

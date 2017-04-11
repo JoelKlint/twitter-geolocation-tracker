@@ -1,45 +1,11 @@
 import psycopg2
+from database.database import Database
 
-conn = psycopg2.connect('dbname={}'.format("twitter-geo"))
+db = Database("twitter-geo")
 
-def get_all_users_with_location():
-    cur = conn.cursor()
+print("Starts the preprocess, This takes about an hour. Consider loading a dump instead.")
 
-    statement = """
-        SELECT user_id, user_location
-        FROM users
-        WHERE user_location IS NOT NULL
-    """
-
-    cur.execute(statement)
-    conn.commit()
-    result_tuple = cur.fetchall()
-    cur.close()
-
-    return result_tuple
-
-def insert_into_preprocessed(location, user_id, rest=None):
-    cur = conn.cursor()
-    if rest != None:
-        statement = """
-            UPDATE users
-            SET preprocessed_location = %s,
-                preprocessed_rest = %s
-            WHERE user_id = %s
-        """
-        cur.execute(statement, (location, rest, user_id))
-    else:
-        statement = """
-            UPDATE users
-            SET preprocessed_location = %s,
-                preprocessed_rest = DEFAULT
-            WHERE user_id = %s
-        """
-        cur.execute(statement, (location, user_id))
-    conn.commit()
-    cur.close()
-
-all_users = get_all_users_with_location()
+all_users = db.get_all_users_with_location()
 
 i = 0
 
@@ -54,19 +20,12 @@ for user in all_users:
             rest = rest_split[1][1:]
         else:
             rest = ",".join(rest_split)
-        insert_into_preprocessed(location, user[0], rest)
+        db.insert_into_preprocessed(location, user[0], rest)
     else:
-        insert_into_preprocessed(user[1], user[0])
+        db.insert_into_preprocessed(user[1], user[0])
     i+= 1
 
     if (i%10000 == 0):
         print('We have completed: ', i)
-    #print(location)
-    #print (rest)
-    #print(user[0])
-    #
 
-
-
-    # Save in DB
-    # ALTER TABLE IN DB
+print ("Done preprocessing")
