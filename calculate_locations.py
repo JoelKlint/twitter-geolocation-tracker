@@ -1,4 +1,5 @@
 import numpy as np
+import layers_method.user_locations
 
 def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
     str_coordinate = str(coordinate)
@@ -55,7 +56,7 @@ def calculate_highest_point(layers, matrix_accuracy):
     for layer in layers:
         result_matrix = np.add(result_matrix, layer)
 
-    np.savetxt('out.txt', result_matrix, fmt='%d')
+    #np.savetxt('out.txt', result_matrix, fmt='%d')
 
     print ('Max value is=', np.max(result_matrix))
     indices = np.where(result_matrix == result_matrix.max())
@@ -73,10 +74,10 @@ def calculate_highest_point(layers, matrix_accuracy):
 #minlong, minlat, maxlong, maxlat
 test1 = [-123.023, -4.012, 30.203, 21.20]
 test2 = [-124.023, -5.012, 31.203, 22.20]
-scale = 10
+accuracy = 1
 print('Creating new matrix')
-test1_matrix = map_boundingbox_to_matrix(test1, scale, 1)
+test1_matrix = map_boundingbox_to_matrix(test1, accuracy, 1)
 print('Creating new matrix')
-test2_matrix = map_boundingbox_to_matrix(test2, scale, 3)
+test2_matrix = map_boundingbox_to_matrix(test2, accuracy, 3)
 print('Creating calculating highest point')
-calculate_highest_point([test1_matrix, test2_matrix], scale)
+calculate_highest_point([test1_matrix, test2_matrix], accuracy)
