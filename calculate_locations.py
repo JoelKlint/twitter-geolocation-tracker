@@ -1,5 +1,6 @@
 import numpy as np
-import layers_method.user_locations
+import layers_method.user_locations as ul
+import layers_method.timezones as tz
 
 def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
     str_coordinate = str(coordinate)
@@ -72,12 +73,17 @@ def calculate_highest_point(layers, matrix_accuracy):
 
 
 #minlong, minlat, maxlong, maxlat
-test1 = [-123.023, -4.012, 30.203, 21.20]
-test2 = [-124.023, -5.012, 31.203, 22.20]
+#test1 = [-123.023, -4.012, 30.203, 21.20]
+#test2 = [-124.023, -5.012, 31.203, 22.20]
+user = 'Charly_Fraley'
+user_bound = ul.get_bounding_box_of_user(user)
+#timezone_bound = tz.get_timezone_bounding_box_of_user(user)
 accuracy = 1
 print('Creating new matrix')
-test1_matrix = map_boundingbox_to_matrix(test1, accuracy, 1)
+#test1_matrix = map_boundingbox_to_matrix(test1, accuracy, 1)
+ul_matrix = map_boundingbox_to_matrix(user_bound, accuracy, 5)
 print('Creating new matrix')
-test2_matrix = map_boundingbox_to_matrix(test2, accuracy, 3)
+#test2_matrix = map_boundingbox_to_matrix(test2, accuracy, 3)
 print('Creating calculating highest point')
-calculate_highest_point([test1_matrix, test2_matrix], accuracy)
+#calculate_highest_point([test1_matrix, test2_matrix], accuracy)
+calculate_highest_point([ul_matrix], accuracy)
