@@ -11,10 +11,11 @@ import sys
 
 def get_countries_using_time_zone(db_time_zone):
 
+    # This file contains which countries that use a specific time zone
     # timezones = open('../data/tzdb-2017b/zone1970.tab', 'r', encoding="utf-8")
     timezones = open('../data/tzdb-2017b/zone.tab', 'r', encoding="utf-8")
-    for line in timezones:
 
+    for line in timezones:
         # Skip garbage
         if(line[0] == '#'):
             continue
@@ -25,6 +26,9 @@ def get_countries_using_time_zone(db_time_zone):
             # Getch ISO 2 letter country codes
             return splitted_line[0].split(',')
 
+    return None
+
+def get_special_bbox_special_treatment(db_time_zone):
     # Handle cases that could not be found
     special_cases = {
         'Central_Time_(US_&_Canada)': (-109.34, 10.7, -85.41, 82.44),
@@ -59,44 +63,29 @@ def get_countries_using_time_zone(db_time_zone):
 # Fetch all time_zones from db
 conn = psycopg2.connect('dbname={}'.format('twitter-geo'))
 cur = conn.cursor()
-# statement = """
-#     SELECT user_time_zone, count(*) as c
-#     FROM users
-#     WHERE user_time_zone IS NOT NULL
-#     GROUP BY user_time_zone
-#     ORDER BY c DESC;
-# """
 statement = """
     SELECT user_time_zone
     FROM users
-    WHERE user_time_zone IS NOT NULL
-    LIMIT 1;
+    WHERE user_time_zone IS NOT NULL;
 """
 cur.execute(statement)
 conn.commit()
 time_zones_from_db = cur.fetchall()
 cur.close()
 
-# This file contains which countries that use a specific time zone
-
 for current_time_zone in time_zones_from_db:
     # Make the strings match
     time_zone = current_time_zone[0].replace(' ', '_')
 
     # We got a hit
-    if get_countries_using_time_zone(time_zone) != None:
-        
-
-
-
-# for country in countries:
-#     bboxes = [c.bbox for c in country_subunits_by_iso_code(country)]
-#     for bbox in bboxes:
-#         print()
-#         print(country)
-#         print(bbox)
-#         min_long = bbox[0]
-#         min_lat = bbox[1]
-#         max_long = bbox[2]
-#         max_lat = bbox[3]
-#         print('{0}, {1}, {2}, {3}'.format(min_long, min_lat, max_long, max_lat))
+    country_codes = get_countries_using_time_zone(time_zone)
+    bbox = None
+    if country_codes != None:
+        for country_code in country_codes:
+            bboxes = [c.bbox for c in country_subunits_by_iso_code(country_code)]
+            for coords in bboxes:
+                # We have a bounding box
+                bbox = coords
+    else:
+        # We have a bounding box
+        bbox = get_special_bbox_special_treatment(time_zone)
