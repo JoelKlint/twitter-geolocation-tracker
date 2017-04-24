@@ -17,7 +17,7 @@ def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
     return float(new_coordinate)
 
 #Matrix coordinates should be given in "Tusental".
-def map_boundingbox_to_matrix(boudning_box, matrix_accuracy):
+def map_boundingbox_to_matrix(boudning_box, matrix_accuracy, scale):
     nbr_rows = 180*matrix_accuracy
     nbr_cols = 360*matrix_accuracy
     matrix_coordinates = np.zeros((nbr_rows, nbr_cols))
