@@ -2,6 +2,8 @@ import numpy as np
 import layers_method.user_locations as ul
 import layers_method.timezones as tz
 
+
+#Removes additional decimals to match accuracy
 def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
     str_coordinate = str(coordinate)
     integer = str_coordinate.split('.')[0]
@@ -17,6 +19,7 @@ def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
             new_coordinate += nbr
     return int(new_coordinate)
 
+#Creates a matrix for a bounding box in accordance to the world
 #Matrix coordinates should be given in "Tusental".
 def map_boundingbox_to_matrix(boudning_box, matrix_accuracy, scale):
     nbr_rows = 360*matrix_accuracy
@@ -50,6 +53,7 @@ def map_boundingbox_to_matrix(boudning_box, matrix_accuracy, scale):
 
     return matrix_coordinates
 
+#Adds layers on top of another and chooses the middle highest point
 def calculate_highest_point(layers, matrix_accuracy):
     nbr_rows = 360*matrix_accuracy
     nbr_cols = 180*matrix_accuracy
@@ -75,15 +79,25 @@ def calculate_highest_point(layers, matrix_accuracy):
 #minlong, minlat, maxlong, maxlat
 #test1 = [-123.023, -4.012, 30.203, 21.20]
 #test2 = [-124.023, -5.012, 31.203, 22.20]
-user = 'Charly_Fraley'
+user = 'Sarlla'
 user_bound = ul.get_bounding_box_of_user(user)
+time_zone_bound = tz.get_bboxes_for_user(user)
 #timezone_bound = tz.get_timezone_bounding_box_of_user(user)
-accuracy = 1
+accuracy = 10
 print('Creating new matrix')
 #test1_matrix = map_boundingbox_to_matrix(test1, accuracy, 1)
-ul_matrix = map_boundingbox_to_matrix(user_bound, accuracy, 5)
-print('Creating new matrix')
+all_layers = []
+if user_bound != None:
+    print ('Adding user location layer')
+    ul_matrix = map_boundingbox_to_matrix(user_bound, accuracy, 5)
+    all_layers.append(ul_matrix)
+if time_zone_bound != None:
+    for bound in time_zone_bound:
+        print ('Adding timezone layer')
+        all_layers.append(map_boundingbox_to_matrix(bound, accuracy, 2))
+
+
 #test2_matrix = map_boundingbox_to_matrix(test2, accuracy, 3)
-print('Creating calculating highest point')
+
 #calculate_highest_point([test1_matrix, test2_matrix], accuracy)
-calculate_highest_point([ul_matrix], accuracy)
+calculate_highest_point(all_layers, accuracy)

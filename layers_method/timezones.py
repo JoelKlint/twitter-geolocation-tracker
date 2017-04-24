@@ -7,12 +7,15 @@ from country_bounding_boxes import (
     country_subunits_by_iso_code
 )
 import psycopg2
+import os
+dir = os.path.dirname(__file__)
+filename = os.path.join(dir, '../data/tzdb-2017b/zone.tab')
 
 def get_countries_using_time_zone(db_time_zone):
 
     # This file contains which countries that use a specific time zone
     # timezones = open('../data/tzdb-2017b/zone1970.tab', 'r', encoding="utf-8")
-    timezones = open('../data/tzdb-2017b/zone.tab', 'r', encoding="utf-8")
+    timezones = open(filename, 'r', encoding="utf-8")
 
     for line in timezones:
         # Skip garbage
@@ -105,4 +108,4 @@ def get_bboxes_for_user(user_screen_name):
         return None
     
     bboxes = get_bboxes_from_db_time_zone(db_time_zone)
-    print(bboxes)
+    return bboxes

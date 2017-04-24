@@ -16,7 +16,7 @@ def get_bounding_box_of_user(user_screen_name):
     limit 1;
     '''
 
-    cur.execute(statment, (user_screen_name))
+    cur.execute(statment, (user_screen_name,))
     coordinates = cur.fetchone()
     cur.close()
     conn.close()
