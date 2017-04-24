@@ -106,6 +106,3 @@ def get_bboxes_for_user(user_screen_name):
     
     bboxes = get_bboxes_from_db_time_zone(db_time_zone)
     print(bboxes)
-
-    
-get_bboxes_for_user('jbm85363')
