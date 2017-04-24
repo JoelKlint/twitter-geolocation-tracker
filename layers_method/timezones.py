@@ -7,7 +7,6 @@ from country_bounding_boxes import (
     country_subunits_by_iso_code
 )
 import psycopg2
-import sys
 
 def get_countries_using_time_zone(db_time_zone):
 
@@ -56,36 +55,57 @@ def get_special_bbox_special_treatment(db_time_zone):
     if special_case != None:
         return special_case
         
-    return None
-        
-        
+    return None    
 
-# Fetch all time_zones from db
-conn = psycopg2.connect('dbname={}'.format('twitter-geo'))
-cur = conn.cursor()
-statement = """
-    SELECT user_time_zone
-    FROM users
-    WHERE user_time_zone IS NOT NULL;
-"""
-cur.execute(statement)
-conn.commit()
-time_zones_from_db = cur.fetchall()
-cur.close()
+def get_time_zone_from_db_for_user(user_screen_name):
+    # Fetch all time_zones from db
+    conn = psycopg2.connect('dbname={}'.format('twitter-geo'))
+    cur = conn.cursor()
+    statement = """
+        SELECT user_time_zone
+        FROM users
+        WHERE user_screen_name = %s
+        LIMIT 1
+    """
+    cur.execute(statement, (user_screen_name,))
+    conn.commit()
+    db_time_zone = cur.fetchall()
+    cur.close()
+    return db_time_zone[0][0]
 
-for current_time_zone in time_zones_from_db:
+
+def get_bboxes_from_db_time_zone(db_time_zone):
     # Make the strings match
-    time_zone = current_time_zone[0].replace(' ', '_')
+    time_zone = db_time_zone.replace(' ', '_')
 
     # We got a hit
     country_codes = get_countries_using_time_zone(time_zone)
     bbox = None
-    if country_codes != None:
+    if country_codes != None: # Look in tz database
         for country_code in country_codes:
             bboxes = [c.bbox for c in country_subunits_by_iso_code(country_code)]
-            for coords in bboxes:
-                # We have a bounding box
-                bbox = coords
-    else:
+            return bboxes
+            # for coords in bboxes:
+            #     # We have a bounding box
+            #     bbox = coords
+    elif get_special_bbox_special_treatment(time_zone) != None: # Look in special treatments
         # We have a bounding box
         bbox = get_special_bbox_special_treatment(time_zone)
+        return [bbox]
+    else:
+        # We could not find a bounding box
+        a = 1
+
+
+# The main entry point for this script
+def get_bboxes_for_user(user_screen_name):
+    db_time_zone = get_time_zone_from_db_for_user(user_screen_name)
+    if db_time_zone == None: 
+        print("User has no time zone")
+        return None
+    
+    bboxes = get_bboxes_from_db_time_zone(db_time_zone)
+    print(bboxes)
+
+    
+get_bboxes_for_user('jbm85363')
