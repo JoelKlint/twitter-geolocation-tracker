@@ -1,8 +1,8 @@
 import psycopg2
 
-def create_bounding_box(coordinates):
-    return [float(coordinates[0])-1, float(coordinates[1])-1,
-            float(coordinates[0])+1, float(coordinates[1])+1]
+def create_bounding_box(coordinates, padding):
+    return [float(coordinates[0])-padding, float(coordinates[1])-padding,
+            float(coordinates[0])+padding, float(coordinates[1])+padding]
 
 
 def get_bounding_box_of_user(user_screen_name):
@@ -20,4 +20,4 @@ def get_bounding_box_of_user(user_screen_name):
     coordinates = cur.fetchone()
     cur.close()
     conn.close()
-    return create_bounding_box(coordinates)
+    return create_bounding_box(coordinates, 1)
