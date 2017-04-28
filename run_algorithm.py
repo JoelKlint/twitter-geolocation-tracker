@@ -2,6 +2,7 @@ from database.database import Database
 import layers_method.user_locations as user_locations
 import create_bounding_box_matrixes as bbtomatrix
 import numpy as np
+import layers_method.tweet_lang as lang
 
 def get_users_data():
     db = Database('twitter-geo')
@@ -30,11 +31,13 @@ def calculate_highest_point(layers, matrix_accuracy):
 users = get_users_data()
 accuracy = 1
 user_location_value = 5
+language_value = 2
 
 #Create layers for each user and print thier highest point
 for user in users:
     all_layers = []
     user_name = user[2]
+    user_lang = user[8]
 
     user_name_bb = user_locations.get_bounding_box_of_user(user_name)
     if user_name_bb != None:

@@ -54,5 +54,6 @@ def get_country_codes_speaking_lang(tweet_lang):
 def get_potential_bounding_boxes_for_tweet_lang(tweet_lang):
     countries = get_country_codes_speaking_lang(tweet_lang)
     bboxes = list(map(get_bounding_boxes_for_country, countries))
-    print(countries)
-    print(bboxes)
+    #print(countries)
+    #print(bboxes)
+    return bboxes
