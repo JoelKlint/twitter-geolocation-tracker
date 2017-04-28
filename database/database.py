@@ -442,3 +442,17 @@ class Database:
         cur.execute(statement, ([user_id, geonameid, country_name]))
         self.conn.commit()
         cur.close()
+
+    def select_everything_from_users (self):
+        cur = self.conn.cursor()
+        statement = '''
+        SELECT * FROM USERS;
+        '''
+
+        cur.execute(statement)
+        self.conn.commit()
+
+        data = cur.fetchall()
+
+        cur.close()
+        return data

@@ -1,9 +1,8 @@
 import tweepy
 import os
 import json
-import places_twitter
-import timezones
 
+#This class connects to the twitter api and gets 20 more tweets and stores them
 class Extra_User_Data():
 
     def __init__(self, user_screen_name):
@@ -35,6 +34,7 @@ class Extra_User_Data():
     def get_all_tweets(self):
         return self.tweets
 
+    #Use one of the tweets in the array as input!
     def get_language_of_tweet(self, tweet):
         return tweet.get('lang', None)
 

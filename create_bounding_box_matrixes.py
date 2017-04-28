@@ -53,46 +53,4 @@ def map_boundingbox_to_matrix(boudning_box, matrix_accuracy, scale):
 
     return matrix_coordinates
 
-#Adds layers on top of another and chooses the middle highest point
-def calculate_highest_point(layers, matrix_accuracy):
-    nbr_rows = 360*matrix_accuracy
-    nbr_cols = 180*matrix_accuracy
-    result_matrix = np.zeros((nbr_rows, nbr_cols))
-    for layer in layers:
-        result_matrix = np.add(result_matrix, layer)
 
-    #np.savetxt('out.txt', result_matrix, fmt='%d')
-
-    print ('Max value is=', np.max(result_matrix))
-    indices = np.where(result_matrix == result_matrix.max())
-    print ('Indicies of max is: ', indices)
-    long_mid = int(len(indices[0])/2)
-    lat_mid = int(len(indices[1])/2)
-    long = indices[0][long_mid]
-    lat = indices[1][lat_mid]
-    lat -= 90*matrix_accuracy
-    long -= 180*matrix_accuracy
-
-    print ('The center coordinate is: long =', long/matrix_accuracy, "lat =", lat/matrix_accuracy)
-
-
-#FORM NEEDED FOR THE BOUNDING BOX: minlong, minlat, maxlong, maxlat
-
-user = 'Sarlla'
-user_bound = ul.get_bounding_box_of_user(user)
-time_zone_bound = tz.get_bboxes_for_user(user)
-accuracy = 10
-print('Creating new matrix')
-all_layers = []
-if user_bound != None:
-    print ('Adding user location layer')
-    ul_matrix = map_boundingbox_to_matrix(user_bound, accuracy, 5)
-    all_layers.append(ul_matrix)
-if time_zone_bound != None:
-    for bound in time_zone_bound:
-        print ('Adding timezone layer')
-        all_layers.append(map_boundingbox_to_matrix(bound, accuracy, 2))
-
-
-
-calculate_highest_point(all_layers, accuracy)
