@@ -17,7 +17,7 @@ def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
     for i, nbr in enumerate(decimal):
         if i < nbr_of_numbers_to_keep:
             new_coordinate += nbr
-    return int(new_coordinate)
+    return float(new_coordinate)
 
 #Creates a matrix for a bounding box in accordance to the world
 #Matrix coordinates should be given in "Tusental".
