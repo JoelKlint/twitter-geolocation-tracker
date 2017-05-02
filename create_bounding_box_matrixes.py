@@ -21,6 +21,7 @@ def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
 
 #Creates a matrix for a bounding box in accordance to the world
 #Matrix coordinates should be given in "Tusental".
+#BoundingBox Form: min_long, min_lat, max_long, max_lat
 def map_boundingbox_to_matrix(boudning_box, matrix_accuracy, scale):
     nbr_rows = 360*matrix_accuracy
     nbr_cols = 180*matrix_accuracy

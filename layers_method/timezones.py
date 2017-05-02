@@ -97,7 +97,7 @@ def get_bboxes_from_db_time_zone(db_time_zone):
         return [bbox]
     else:
         # We could not find a bounding box
-        a = 1
+        return None
 
 
 # The main entry point for this script

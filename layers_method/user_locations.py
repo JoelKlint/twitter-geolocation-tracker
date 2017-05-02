@@ -22,4 +22,6 @@ def get_bounding_box_of_user(user_screen_name):
         return None
     cur.close()
     conn.close()
-    return create_bounding_box(coordinates, 1)
+    # Padding the bb with 1 degree
+    padding = 1
+    return create_bounding_box(coordinates, padding)

@@ -9,10 +9,10 @@ class Extra_User_Data():
         api = self.connect_to_api()
         tweets = self.get_more_tweets(api, user_screen_name)
         self.tweets = []
-        for tweet in tweets:
-            mapped_tweet = self.tweet_to_map(tweet)
-            self.tweets.append(mapped_tweet)
-
+        if tweets:
+            for tweet in tweets:
+                mapped_tweet = self.tweet_to_map(tweet)
+                self.tweets.append(mapped_tweet)
 
 
     def connect_to_api(self):
@@ -29,7 +29,11 @@ class Extra_User_Data():
         return json.loads(to_map)
 
     def get_more_tweets(self, api, user_screen_name):
-        return api.user_timeline(user_screen_name)
+        try:
+            return api.user_timeline(user_screen_name)
+        except tweepy.error.TweepError:
+            return False
+
 
     def get_all_tweets(self):
         return self.tweets
