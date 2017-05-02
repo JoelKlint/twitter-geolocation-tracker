@@ -416,7 +416,7 @@ class Database:
                     preprocessed_rest = DEFAULT
                 WHERE user_id = %s
             """
-            cur.execute(statement, (location, user_id))
+        cur.execute(statement, (location, user_id))
         self.conn.commit()
         cur.close()
 
@@ -448,6 +448,37 @@ class Database:
         statement = '''
         SELECT * FROM USERS;
         '''
+
+        cur.execute(statement)
+        self.conn.commit()
+
+        data = cur.fetchall()
+
+        cur.close()
+        return data
+
+    def update_predicted_coordinates(self, latitude, longitude, max_value, user_id):
+        cur = self.conn.cursor()
+
+        statement = '''
+        INSERT INTO predicted_user_locations (predicted_lat, predicted_long, max_value, user_id) 
+        VALUES (%s, %s, %s, %s)
+        ON CONFLICT (user_id) DO UPDATE 
+        SET predicted_lat = excluded.predicted_lat, 
+            predicted_long = excluded.predicted_long,
+            max_value = excluded.max_value;
+        '''
+        cur.execute(statement, (float(latitude), float(longitude), float(max_value), user_id))
+        self.conn.commit()
+        cur.close()
+
+    def select_users_with_predicted_coordinates(self):
+        cur = self.conn.cursor()
+        statement = '''
+            SELECT * 
+            FROM predicted_user_locations
+            WHERE predicted_lat <> 0 AND predicted_long <> 0;
+            '''
 
         cur.execute(statement)
         self.conn.commit()

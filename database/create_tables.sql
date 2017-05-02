@@ -118,3 +118,11 @@ CREATE TABLE IF NOT EXISTS identified_via_geonames (
     FOREIGN KEY (geonameid) REFERENCES geonames(geonameid),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+CREATE TABLE IF NOT EXISTS predicted_user_locations(
+  user_id BIGINT UNIQUE,
+  predicted_lat DECIMAL,
+  predicted_long DECIMAL,
+  max_value DECIMAL,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+)

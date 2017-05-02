@@ -119,3 +119,19 @@ class Database(Database):
                 WHERE user_id = (SELECT user_id FROM trumps_tweets LIMIT 1)
             )
         """
+
+    def select_users_with_predicted_coordinates(self):
+        cur = self.conn.cursor()
+        statement = '''
+            SELECT * 
+            FROM predicted_user_locations
+            WHERE predicted_lat <> 0 AND predicted_long <> 0;
+            '''
+
+        cur.execute(statement)
+        self.conn.commit()
+
+        data = cur.fetchall()
+
+        cur.close()
+        return data

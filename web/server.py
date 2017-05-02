@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from database_text_searcher import Database
 app = Flask(__name__)
 
@@ -51,6 +51,21 @@ def test():
     db = Database(DB_NAME)
     db.nbrOfUsersWithLocation()
 
+@app.route("/cluster_data", methods=['GET'])
+def cluster():
+    return render_template('cluster_data.html')
+
+@app.route("/cluster_data/get_data", methods=['GET'])
+def get_data():
+    db = Database(DB_NAME)
+    data = db.select_users_with_predicted_coordinates()
+    list_data = []
+    for dp in data:
+        lat = float(dp[1])
+        long = float(dp[2])
+        list_data.append([lat, long])
+    result = list_data
+    return jsonify(result)
 
 
 app.run(debug=True)
