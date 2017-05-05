@@ -117,9 +117,9 @@ def main():
 
         #Handle Extra tweets
         extra_tweets = []
+        print ('Getting extra data for:', user_name)
         if len(user_tweets) < 20:
             extra_user_data = Extra_User_Data(user_id)
-            print (extra_user_data.get_all_tweets())
             extra_tweets = extra_user_data.get_all_tweets()
         used_extra_time_zones = []
         used_extra_langs= []
@@ -127,14 +127,13 @@ def main():
             for tweet in extra_tweets:
                 tweet_lang = extra_user_data.get_language_of_tweet(tweet)
                 tweet_time_zone = extra_user_data.get_user_time_zone_of_tweet(tweet)
-                print ("Extra Lang is:", tweet_lang)
-                print ("Extra Time zone is:", tweet_time_zone)
 
                 if tweet_lang != None and tweet_lang not in used_extra_langs:
                     used_extra_langs.append(tweet_lang)
+                    print ("Extra Lang is:", tweet_lang)
                     add_tweet_language_layer(tweet_lang, all_layers)
                 if tweet_time_zone != None and tweet_time_zone not in used_extra_time_zones :
-                    print ('Getting tweet time zone', tweet_time_zone)
+                    print ("Extra Time zone is:", tweet_time_zone)
                     used_extra_time_zones.append(tweet_time_zone)
                     add_time_zone_layer(tweet_time_zone, all_layers)
         result = calculate_highest_point(all_layers, accuracy)
