@@ -8,29 +8,35 @@ import layers_method.user_timezone as timezones
 
 accuracy = 1
 
-
 def get_users_data():
     db = Database('twitter-geo')
     return db.select_everything_from_users()
 
 #Adds layers on top of another and chooses the middle highest point
-def calculate_highest_point(layers, matrix_accuracy):
-    nbr_rows = 360*matrix_accuracy
-    nbr_cols = 180*matrix_accuracy
+def calculate_highest_point(layers):
+    global accuracy
+    nbr_rows = 360*accuracy
+    nbr_cols = 180*accuracy
     result_matrix = np.zeros((nbr_rows, nbr_cols))
     for layer in layers:
         result_matrix = np.add(result_matrix, layer)
 
     max = np.max(result_matrix)
     indices = np.where(result_matrix == result_matrix.max())
+
     long_mid = int(len(indices[0])/2)
     lat_mid = int(len(indices[1])/2)
     long = indices[0][long_mid]
     lat = indices[1][lat_mid]
-    lat -= 90*matrix_accuracy
-    long -= 180*matrix_accuracy
 
-    return [lat, long, max]
+    # Figure out if we picked a incorrect coordinate
+    error = False
+    if result_matrix[long][lat] != max:
+        error = True
+
+    lat -= 90*accuracy
+    long -= 180*accuracy
+    return [lat, long, max, error]
 
 def add_user_name_location_layer(user_name, all_layers, status_code=False):
     global accuracy
@@ -136,9 +142,10 @@ def main():
                     print ("Extra Time zone is:", tweet_time_zone)
                     used_extra_time_zones.append(tweet_time_zone)
                     add_time_zone_layer(tweet_time_zone, all_layers)
-        result = calculate_highest_point(all_layers, accuracy)
+
+        result = calculate_highest_point(all_layers)
         print ('The user:', user_name, 'is located at: lat=',
         result[0], 'long=', result[1], 'with maxvalue=', result[2])
         #print ('Updating database')
-        db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
+        db.update_predicted_coordinates(result[0], result[1], result[2], user_id, result[3])
 main()
