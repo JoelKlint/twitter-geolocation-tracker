@@ -18,7 +18,7 @@ def get_countries_using_time_zone(timezone):
         preprocess_timezone_file()
     
     res = []
-    with open('map_timezone_to_country.json', 'r') as data_file:    
+    with open(filename, 'r') as data_file:    
         data = json.load(data_file)
         return data.get(timezone.strip('\n'))
 
