@@ -40,6 +40,8 @@ def add_user_name_location_layer(user_name, all_layers, status_code=False):
         layer = bbtomatrix.map_boundingbox_to_matrix(user_name_bb, accuracy, user_location_value)
         status_code = True
         all_layers.append(layer)
+    else:
+        print("User have no location")
 
 def add_user_language_layer(user_lang, all_layers, status_code=False):
     global accuracy
@@ -53,6 +55,8 @@ def add_user_language_layer(user_lang, all_layers, status_code=False):
                 layer = bbtomatrix.map_boundingbox_to_matrix(bb, accuracy, language_value/len(user_lang_bb))
                 all_layers.append(layer)
                 status_code = True
+    else:
+        print ("Got None for language:", user_lang)
 
 def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
     global accuracy
@@ -63,6 +67,8 @@ def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
             layer = bbtomatrix.map_boundingbox_to_matrix(list(bb), accuracy, timezone_value/len(timezone_bbs))
             all_layers.append(layer)
             status_code = True
+    else:
+        print ("Got None for Timezone:", user_time_zone)
 
 
 def main():
@@ -77,6 +83,7 @@ def main():
         user_id = user[0]
         user_name = user[2]
         user_lang = user[8]
+        user_time_zone = user[7]
         print ("Running user" , user_name)
 
         # Adding user specified location layer
@@ -86,8 +93,7 @@ def main():
 
         add_user_language_layer(user_lang, all_layers)
 
-
-        # TODO Adding the timezone layer
+        add_time_zone_layer(user_time_zone, all_layers)
 
 
 
