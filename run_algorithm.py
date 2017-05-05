@@ -77,6 +77,7 @@ def main():
         user_id = user[0]
         user_name = user[2]
         user_lang = user[8]
+        print ("Running user" , user_name)
 
         # Adding user specified location layer
         got_user_location = False
@@ -92,15 +93,15 @@ def main():
 
         if len(all_layers) > 0 and got_user_location:
             result = calculate_highest_point(all_layers, accuracy)
-            print ('The user:', user_name, 'is located at: lat=',
-                   result[0], 'long=', result[1], 'with maxvalue=', result[2])
+            #print ('The user:', user_name, 'is located at: lat=',
+            #       result[0], 'long=', result[1], 'with maxvalue=', result[2])
             db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
-            print ('Updating database')
+            #print ('Updating database')
 
         # Get extra data for identification
         else:
-            print ('Could not calculate any layer for user:', user_name, 'Getting more tweets')
             extra_user_data = Extra_User_Data(user_name)
+            #print ('Could not calculate any layer for user:', user_name, 'Getting more tweets')
             extra_tweets = extra_user_data.get_all_tweets()
             used_time_zones = []
             used_langs= []
@@ -117,8 +118,8 @@ def main():
                     add_time_zone_layer(tweet_time_zone, all_layers)
 
             result = calculate_highest_point(all_layers, accuracy)
-            print ('The user:', user_name, 'is located at: lat=',
-            result[0], 'long=', result[1], 'with maxvalue=', result[2])
-            print ('Updating database')
+            #print ('The user:', user_name, 'is located at: lat=',
+            #result[0], 'long=', result[1], 'with maxvalue=', result[2])
+            #print ('Updating database')
             db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
 main()

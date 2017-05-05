@@ -33,17 +33,7 @@ def split_to_words(query):
     listify.append(query)
     return listify
 
-db = Database("twitter-geo")
-
-# Must be less then 2000 an hour
-some_user_locations = db.select_user_locations()
-
-
-throttle_count = 0
-
-no_result_count = 0
-
-for location in some_user_locations:
+def lookup(db, location, throttle_count=0, no_result_count=0):
     throttle_count += 1
 
     if throttle_count == 1950:
@@ -59,47 +49,47 @@ for location in some_user_locations:
 
     #Check given user location
     query = user_location
-    print ("Sending query for: ", query)
+    #print ("Sending query for: ", query)
     result = make_search_request(query)
-    print (result)
+    #print (result)
     total_results = result['totalResultsCount']
 
     if total_results > 0:
-        print("FOUND RESULT")
+        #print("FOUND RESULT")
         id = result['geonames'][0]['geonameId']
         country_name = result['geonames'][0].get('countryName', None)
         db.insert_into_identified_via_geonames(user_id, id, country_name)
     else:
         # Check our preprocessed locations
-        print ("Failed.... Checking Preprocessed locations")
+        #print ("Failed.... Checking Preprocessed locations")
         query = preprocessed_location
-        print ("Sending query for: ", query)
+        #print ("Sending query for: ", query)
         result = make_search_request(query)
         if result['totalResultsCount'] > 0:
-            print ("FOUND RESULT")
+            #print ("FOUND RESULT")
             id = result['geonames'][0]['geonameId']
             country_name = result['geonames'][0].get('countryName', None)
             db.insert_into_identified_via_geonames(user_id, id, country_name)
         else:
             # Check our preprocessed preprocessed rest
-            print('Failed.... Checking Rest of preprocess if exists')
+            #print('Failed.... Checking Rest of preprocess if exists')
             if (preprocessed_rest):
                 query = preprocessed_rest
                 result = make_search_request(query)
-                print ("Sending query for: ", query)
+                #print ("Sending query for: ", query)
                 if (result['totalResultsCount'] > 0):
                     id = result['geonames'][0]['geonameId']
                     country_name = result['geonames'][0].get('countryName', None)
                     db.insert_into_identified_via_geonames(user_id, id, country_name)
             else:
                 #CHECKING EACH INDIVIDUAL WORD
-                print('Failed.... Checking Every Word')
+                #print('Failed.... Checking Every Word')
                 list_words = split_to_words(preprocessed_location)
                 if (preprocessed_rest):
                     list_words += split_to_words(preprocessed_rest)
                 for word in list_words:
                     query = word
-                    print ("Sending query for: ", word)
+                    #print ("Sending query for: ", word)
                     result = make_search_request(query)
                     if result['totalResultsCount'] > 0:
                         id = result['geonames'][0]['geonameId']
@@ -107,12 +97,22 @@ for location in some_user_locations:
                         db.insert_into_identified_via_geonames(user_id, id, country_name)
                         break
                     else:
-                        print ("Still no result")
+                        #print ("Still no result")
                         no_result_count += 1
 
-                # MAYBE DO A FALLOVER TO LOCATIONS IN DBPEDIA SPOTLIGHT?
-                # Seems hard since its politics, though might be possible with locations
 
+def run_location_lookup_on_all_users():
+    db = Database("twitter-geo")
+    some_user_locations_with_ids = db.select_user_locations()
+    no_result_count = 0
+    for location in some_user_locations_with_ids:
+        throttle_count = 0
+        lookup(db, location, throttle_count, no_result_count)
+    #print('No result for: ', no_result_count, " queries")
 
-
-print('No result for: ', no_result_count, " queries")
+def run_location_lookup_on_a_user(user_id):
+    db = Database("twitter-geo")
+    user_location = db.select_locations_based_on_user_id(user_id)
+    print (user_location)
+    if len(user_location) > 0:
+        lookup(db, user_location[0])

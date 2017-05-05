@@ -388,6 +388,24 @@ class Database:
             i+=1
         return result_array
 
+    def select_locations_based_on_user_id(self, user_id):
+        cur = self.conn.cursor()
+        statement = """
+        SELECT user_location
+        FROM users
+        WHERE user_location IS NOT NULL
+        AND user_id = %s;
+        """
+        cur.execute(statement, (user_id,))
+        self.conn.commit()
+        result_tuple = cur.fetchall()
+        result_array = []
+        cur.close()
+        for result in result_tuple:
+            result_array.append([user_id[0], result_tuple[0][0]])
+
+        return result_array
+
     def set_filtered_location(self, user_id, geonameid, ratio):
         cur = self.conn.cursor()
         statement = """
