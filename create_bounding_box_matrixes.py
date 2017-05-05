@@ -1,6 +1,5 @@
 import numpy as np
-import layers_method.user_locations as ul
-import layers_method.timezones as tz
+
 
 
 #Removes additional decimals to match accuracy

@@ -4,7 +4,7 @@ import layers_method.user_locations as user_locations
 import create_bounding_box_matrixes as bbtomatrix
 import numpy as np
 import layers_method.tweet_lang as lang
-import layers_method.timezones as timezones
+import layers_method.user_timezone as timezones
 
 accuracy = 1
 
@@ -35,7 +35,7 @@ def calculate_highest_point(layers, matrix_accuracy):
 def add_user_name_location_layer(user_name, all_layers, status_code=False):
     global accuracy
     user_location_value = 5
-    user_name_bb = user_locations.get_bounding_box_of_user(user_name)
+    user_name_bb = user_locations.get_bbox(user_name)
     if user_name_bb != None:
         layer = bbtomatrix.map_boundingbox_to_matrix(user_name_bb, accuracy, user_location_value)
         status_code = True
@@ -44,7 +44,7 @@ def add_user_name_location_layer(user_name, all_layers, status_code=False):
 def add_user_language_layer(user_lang, all_layers, status_code=False):
     global accuracy
     language_value = 1
-    user_lang_bb = lang.get_potential_bounding_boxes_for_tweet_lang(user_lang)
+    user_lang_bb = lang.get_bboxes(user_lang)
     if user_lang_bb != None:
         for bb in user_lang_bb:
             if len(bb) > 0:
@@ -57,7 +57,7 @@ def add_user_language_layer(user_lang, all_layers, status_code=False):
 def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
     global accuracy
     timezone_value = 1
-    timezone_bbs = timezones.get_bboxes_from_db_time_zone(user_time_zone)
+    timezone_bbs = timezones.get_bboxes(user_time_zone)
     if timezone_bbs != None:
         for bb in timezone_bbs:
             layer = bbtomatrix.map_boundingbox_to_matrix(list(bb), accuracy, timezone_value/len(timezone_bbs))
@@ -93,8 +93,8 @@ def main():
 
         if len(all_layers) > 0 and got_user_location:
             result = calculate_highest_point(all_layers, accuracy)
-            #print ('The user:', user_name, 'is located at: lat=',
-            #       result[0], 'long=', result[1], 'with maxvalue=', result[2])
+            print ('The user:', user_name, 'is located at: lat=',
+                   result[0], 'long=', result[1], 'with maxvalue=', result[2])
             db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
             #print ('Updating database')
 
@@ -118,8 +118,8 @@ def main():
                     add_time_zone_layer(tweet_time_zone, all_layers)
 
             result = calculate_highest_point(all_layers, accuracy)
-            #print ('The user:', user_name, 'is located at: lat=',
-            #result[0], 'long=', result[1], 'with maxvalue=', result[2])
+            print ('The user:', user_name, 'is located at: lat=',
+            result[0], 'long=', result[1], 'with maxvalue=', result[2])
             #print ('Updating database')
             db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
 main()
