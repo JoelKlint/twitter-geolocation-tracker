@@ -113,6 +113,5 @@ def run_location_lookup_on_all_users():
 def run_location_lookup_on_a_user(user_id):
     db = Database("twitter-geo")
     user_location = db.select_locations_based_on_user_id(user_id)
-    print (user_location)
     if len(user_location) > 0:
         lookup(db, user_location[0])

@@ -22,7 +22,13 @@ def convert_lang(lang):
 # Returns bounding boxes for a country.
 # The country MUST be specified in two letter ISO format
 def get_bounding_boxes_for_country(country_code):
-    return [c.bbox for c in country_subunits_by_iso_code(country_code)]
+    if len([c for c in country_subunits_by_iso_code(country_code)]) == 0:
+        return None
+
+    return {
+        'bboxes': [c.bbox for c in country_subunits_by_iso_code(country_code)],
+        'weights': [c.pop_est for c in country_subunits_by_iso_code(country_code)]
+    }
 
 # Get all country codes that speak a language
 def get_country_codes_speaking_lang(tweet_lang):
@@ -38,10 +44,11 @@ def get_country_codes_speaking_lang(tweet_lang):
         return data.get(tweet_lang)
 
 # The entry point for this layer
-def get_bboxes(tweet_lang):
+def get_bboxes_and_weights(tweet_lang):
     countries = get_country_codes_speaking_lang(tweet_lang)
     if(countries != None):
         bboxes = list(map(get_bounding_boxes_for_country, countries))
+        bboxes = list(filter(None, bboxes))
         return bboxes
 
 # This can be run to 

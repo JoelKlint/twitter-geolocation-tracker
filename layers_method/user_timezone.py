@@ -100,6 +100,5 @@ def get_bboxes_from_db_time_zone(db_time_zone):
 
 # The main entry point for this script
 def get_bboxes(time_zone):
-    print("REcieved time zone {}".format(time_zone))
     bboxes = get_bboxes_from_db_time_zone(time_zone)
     return bboxes

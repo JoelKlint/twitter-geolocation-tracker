@@ -47,22 +47,38 @@ def add_user_name_location_layer(user_name, all_layers, status_code=False):
         status_code = True
         all_layers.append(layer)
     else:
-        print("User have no location")
+        a=1
+        # print("User have no location")
 
 def add_tweet_language_layer(user_lang, all_layers, status_code=False):
     global accuracy
-    language_value = 1
-    user_lang_bb = lang.get_bboxes(user_lang)
+    language_value = 10
+    user_lang_bb = lang.get_bboxes_and_weights(user_lang)
     if user_lang_bb != None:
-        for bb in user_lang_bb:
-            if len(bb) > 0:
-                bb = bb[0]
-                bb = [bb[0], bb[1], bb[2], bb[3]]
-                layer = bbtomatrix.map_boundingbox_to_matrix(bb, accuracy, language_value/len(user_lang_bb))
+
+        # Calculate total weight to distribute normalised weights later
+        total_weight = list(map(lambda x: x.get('weights'), user_lang_bb))
+        total_weight = list(map(lambda x: sum(x), total_weight))
+        total_weight = sum(total_weight)
+
+        # For every country
+        for entry in user_lang_bb:
+
+            # For every bounding box in country
+            for i in range(len(entry.get('bboxes'))):
+
+                # Retrieve the bbox
+                bbox = list(entry.get('bboxes')[i])
+                # Retrieve the weight
+                weight = (entry.get('weights')[i] / total_weight) * language_value
+                if weight < 0: weight = 0
+                
+                # Create a layer
+                layer = bbtomatrix.map_boundingbox_to_matrix(bbox, accuracy, weight)
                 all_layers.append(layer)
-                status_code = True
     else:
-        print ("Got None for language:", user_lang)
+        a=1
+        # print ("Got None for language:", user_lang)
 
 def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
     global accuracy
@@ -74,7 +90,8 @@ def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
             all_layers.append(layer)
             status_code = True
     else:
-        print ("Got None for Timezone:", user_time_zone)
+        a=1
+        # print ("Got None for Timezone:", user_time_zone)
 
 
 def main():
@@ -91,7 +108,7 @@ def main():
         user_lang = user[8]
         user_time_zone = user[7]
 
-        print ("Running user" , user_name)
+        # print ("Running user" , user_name)
 
         # Adding user specified location layer
         got_user_location = False
@@ -104,7 +121,8 @@ def main():
         if user_time_zone != None:
             add_time_zone_layer(user_time_zone, all_layers)
         else:
-            print ("Got none for user time zone")
+            a=1
+            # print ("Got none for user time zone")
 
 
         user_tweets = db.select_every_tweet_of_user(user_id)
@@ -125,7 +143,7 @@ def main():
         extra_tweets = []
         if len(user_tweets) < 20:
             extra_user_data = Extra_User_Data(user_id)
-            print (extra_user_data.get_all_tweets())
+            # print (extra_user_data.get_all_tweets())
             extra_tweets = extra_user_data.get_all_tweets()
         used_extra_time_zones = []
         used_extra_langs= []
@@ -133,20 +151,20 @@ def main():
             for tweet in extra_tweets:
                 tweet_lang = extra_user_data.get_language_of_tweet(tweet)
                 tweet_time_zone = extra_user_data.get_user_time_zone_of_tweet(tweet)
-                print ("Extra Lang is:", tweet_lang)
-                print ("Extra Time zone is:", tweet_time_zone)
+                # print ("Extra Lang is:", tweet_lang)
+                # print ("Extra Time zone is:", tweet_time_zone)
 
                 if tweet_lang != None and tweet_lang not in used_extra_langs:
                     used_extra_langs.append(tweet_lang)
                     add_tweet_language_layer(tweet_lang, all_layers)
                 if tweet_time_zone != None and tweet_time_zone not in used_extra_time_zones :
-                    print ('Getting tweet time zone', tweet_time_zone)
+                    # print ('Getting tweet time zone', tweet_time_zone)
                     used_extra_time_zones.append(tweet_time_zone)
                     add_time_zone_layer(tweet_time_zone, all_layers)
 
         result = calculate_highest_point(all_layers)
-        print ('The user:', user_name, 'is located at: lat=',
-        result[0], 'long=', result[1], 'with maxvalue=', result[2])
+        # print ('The user:', user_name, 'is located at: lat=',
+        # result[0], 'long=', result[1], 'with maxvalue=', result[2])
         #print ('Updating database')
         db.update_predicted_coordinates(result[0], result[1], result[2], user_id, result[3])
 main()
