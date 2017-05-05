@@ -122,16 +122,21 @@ class Database(Database):
 
     def select_users_with_predicted_coordinates(self):
         cur = self.conn.cursor()
-        statement = '''
-            SELECT * 
+        statement = """
+            SELECT predicted_lat, predicted_long
             FROM predicted_user_locations
             WHERE predicted_lat <> 0 AND predicted_long <> 0;
-            '''
+        """
 
+        response = []
         cur.execute(statement)
+        rows = cur.fetchall()
+        for row in rows:
+            response.append({
+                'lat': float(row[0]),
+                'lng': float(row[1]),
+            })
+
         self.conn.commit()
-
-        data = cur.fetchall()
-
         cur.close()
-        return data
+        return response

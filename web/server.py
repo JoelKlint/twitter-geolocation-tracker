@@ -49,17 +49,18 @@ def searchTemplate(table='users'):
 def cluster():
     return render_template('cluster_data.html')
 
-@app.route("/cluster_data/get_data", methods=['GET'])
-def get_data():
-    db = Database(DB_NAME)
-    data = db.select_users_with_predicted_coordinates()
-    list_data = []
-    for dp in data:
-        lat = float(dp[1])
-        long = float(dp[2])
-        list_data.append([lat, long])
-    result = list_data
-    return jsonify(result)
+# @app.route("/cluster_data/get_data", methods=['GET'])
+# def get_data():
+#     db = Database(DB_NAME)
+#     data = db.select_users_with_predicted_coordinates()
+#     list_data = []
+#     for dp in data:
+#         lat = float(dp[1])
+#         long = float(dp[2])
+#         list_data.append([lat, long])
+#     result = list_data
+#     return jsonify(result)
+
 
 # This is just a mock. Fill it will real data
 @app.route('/locations', methods=['GET'])
@@ -89,7 +90,11 @@ def get_locations():
         {'lat': -42.735258, 'lng': 147.438000},
         {'lat': -43.999792, 'lng': 170.463352}
     ]
-    return jsonify(locations)
+
+    db = Database(DB_NAME)
+    data = db.select_users_with_predicted_coordinates()
+
+    return jsonify(data)
 
     # {
     #     user_id: user_id,
