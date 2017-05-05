@@ -124,7 +124,7 @@ def main():
         #Handle Extra tweets
         extra_tweets = []
         print ('Getting extra data for:', user_name)
-        if len(user_tweets) < 20:
+        if len(user_tweets) < 3:
             extra_user_data = Extra_User_Data(user_id)
             extra_tweets = extra_user_data.get_all_tweets()
         used_extra_time_zones = []

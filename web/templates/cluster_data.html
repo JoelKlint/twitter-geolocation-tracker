@@ -23,14 +23,14 @@
 
         // Get locations from server, then plot it
         $.get('locations')
-        .done(stuffFromServer => {
+        .done(function(stuffFromServer) {
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 1,
                 center: new google.maps.LatLng(0,0),
                 mapTypeId: 'terrain'
             });
 
-            var markers = stuffFromServer.map((location, i) => {
+            var markers = stuffFromServer.map(function(location, i) {
                 return new google.maps.Marker({
                     position: location, 
                     label: 'A'
@@ -40,7 +40,7 @@
             var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
 
         })
-        .fail(() => {
+        .fail(function() {
             alert('Error getting stuff from server')
         })        
 
