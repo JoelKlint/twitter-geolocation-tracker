@@ -35,13 +35,14 @@ def get_country_codes_speaking_lang(tweet_lang):
     res = []
     with open(filename, 'r') as data_file:    
         data = json.load(data_file)
-        return data[tweet_lang]
+        return data.get(tweet_lang)
 
 # The entry point for this layer
 def get_bboxes(tweet_lang):
     countries = get_country_codes_speaking_lang(tweet_lang)
-    bboxes = list(map(get_bounding_boxes_for_country, countries))
-    return bboxes
+    if(countries != None):
+        bboxes = list(map(get_bounding_boxes_for_country, countries))
+        return bboxes
 
 # This can be run to 
 def preprocess_lang_file():
