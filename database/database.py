@@ -475,6 +475,21 @@ class Database:
         cur.close()
         return data
 
+    def select_every_tweet_of_user (self, user_id):
+        cur = self.conn.cursor()
+        statement = '''
+        SELECT * FROM tweets INNER JOIN users using(user_id)
+        WHERE user_id = %s;
+        '''
+
+        cur.execute(statement, (user_id,))
+        self.conn.commit()
+
+        data = cur.fetchall()
+
+        cur.close()
+        return data
+
     def update_predicted_coordinates(self, latitude, longitude, max_value, user_id):
         cur = self.conn.cursor()
 

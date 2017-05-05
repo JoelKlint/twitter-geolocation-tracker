@@ -43,7 +43,7 @@ def add_user_name_location_layer(user_name, all_layers, status_code=False):
     else:
         print("User have no location")
 
-def add_user_language_layer(user_lang, all_layers, status_code=False):
+def add_tweet_language_layer(user_lang, all_layers, status_code=False):
     global accuracy
     language_value = 1
     user_lang_bb = lang.get_bboxes(user_lang)
@@ -84,6 +84,7 @@ def main():
         user_name = user[2]
         user_lang = user[8]
         user_time_zone = user[7]
+
         print ("Running user" , user_name)
 
         # Adding user specified location layer
@@ -91,41 +92,50 @@ def main():
 
         add_user_name_location_layer(user_name, all_layers, got_user_location)
 
-        add_user_language_layer(user_lang, all_layers)
+        #not done
+        #add_user_language_layer(user_lang, all_layers)
 
-        add_time_zone_layer(user_time_zone, all_layers)
+        if user_time_zone != None:
+            add_time_zone_layer(user_time_zone, all_layers)
+
+
+        user_tweets = db.select_every_tweet_of_user(user_id)
+        user_tweets = [list(elem) for elem in user_tweets]
+
+        used_langs = []
+
+        if len(user_tweets) > 0:
+            for tweet in user_tweets:
+                tweet_lang = tweet[14]
+                if tweet_lang != None and tweet_lang not in used_langs:
+                    used_langs.append(tweet_lang)
+                    add_tweet_language_layer(tweet_lang, all_layers)
 
 
 
-        if len(all_layers) > 0 and got_user_location:
-            result = calculate_highest_point(all_layers, accuracy)
-            print ('The user:', user_name, 'is located at: lat=',
-                   result[0], 'long=', result[1], 'with maxvalue=', result[2])
-            db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
-            #print ('Updating database')
-
-        # Get extra data for identification
-        else:
+        #Handle Extra tweets
+        extra_tweets = []
+        if len(user_tweets) < 20:
             extra_user_data = Extra_User_Data(user_name)
-            #print ('Could not calculate any layer for user:', user_name, 'Getting more tweets')
             extra_tweets = extra_user_data.get_all_tweets()
-            used_time_zones = []
-            used_langs= []
+        used_extra_time_zones = []
+        used_extra_langs= []
+        if len (extra_tweets) > 0:
             for tweet in extra_tweets:
                 tweet_id = extra_user_data.get_tweet_id(tweet)
                 tweet_lang = extra_user_data.get_language_of_tweet(tweet)
                 tweet_time_zone = extra_user_data.get_user_time_zone_of_tweet(tweet)
 
-                if tweet_lang != None and tweet_lang not in used_langs:
-                    used_langs.append(tweet_lang)
-                    add_user_language_layer(tweet_lang, all_layers)
-                if tweet_time_zone != None and tweet_time_zone not in used_time_zones :
-                    used_time_zones.append(tweet_time_zone)
+                if tweet_lang != None and tweet_lang not in used_extra_langs:
+                    used_extra_langs.append(tweet_lang)
+                    add_tweet_language_layer(tweet_lang, all_layers)
+                if tweet_time_zone != None and tweet_time_zone not in used_extra_time_zones :
+                    used_extra_time_zones.append(tweet_time_zone)
                     add_time_zone_layer(tweet_time_zone, all_layers)
 
-            result = calculate_highest_point(all_layers, accuracy)
-            print ('The user:', user_name, 'is located at: lat=',
-            result[0], 'long=', result[1], 'with maxvalue=', result[2])
-            #print ('Updating database')
-            db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
+        result = calculate_highest_point(all_layers, accuracy)
+        print ('The user:', user_name, 'is located at: lat=',
+        result[0], 'long=', result[1], 'with maxvalue=', result[2])
+        #print ('Updating database')
+        db.update_predicted_coordinates(result[0], result[1], result[2], user_id)
 main()
