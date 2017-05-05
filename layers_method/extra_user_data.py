@@ -5,9 +5,10 @@ import json
 #This class connects to the twitter api and gets 20 more tweets and stores them
 class Extra_User_Data():
 
-    def __init__(self, user_screen_name):
+    def __init__(self, user_id):
         api = self.connect_to_api()
-        tweets = self.get_more_tweets(api, user_screen_name)
+        user_id = [user_id]
+        tweets = self.get_more_tweets(api, user_id)
         self.tweets = []
         if tweets:
             for tweet in tweets:
@@ -28,9 +29,9 @@ class Extra_User_Data():
         to_map = json.dumps(tweet._json)
         return json.loads(to_map)
 
-    def get_more_tweets(self, api, user_screen_name):
+    def get_more_tweets(self, api, user_id):
         try:
-            return api.user_timeline(user_screen_name)
+            return api.statuses_lookup(user_id)
         except tweepy.error.TweepError:
             return False
 

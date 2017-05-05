@@ -12,18 +12,6 @@ dir = os.path.dirname(__file__)
 filename = os.path.join(dir, '../data/tzdb-2017b/zone.tab')
 
 def get_countries_using_time_zone(db_time_zone):
-
-<<<<<<< HEAD:layers_method/user_timezone.py
-    dir = os.path.dirname(__file__)
-    filename = os.path.join(dir, 'map_timezone_to_country.json')
-    if(not os.path.isfile(filename)):
-        preprocess_timezone_file()
-    
-    res = []
-    with open(filename, 'r') as data_file:    
-        data = json.load(data_file)
-        return data.get(timezone.strip('\n'))
-=======
     # This file contains which countries that use a specific time zone
     # timezones = open('../data/tzdb-2017b/zone1970.tab', 'r', encoding="utf-8")
     timezones = open(filename, 'r', encoding="utf-8")
@@ -32,8 +20,6 @@ def get_countries_using_time_zone(db_time_zone):
         # Skip garbage
         if(line[0] == '#'):
             continue
->>>>>>> parent of 2a0cbd9... Made user time zone faster and changed entry point name:layers_method/timezones.py
-
         # Match names of time zones
         splitted_line = line.split('\t')
         if db_time_zone in splitted_line[2]:
@@ -113,11 +99,7 @@ def get_bboxes_from_db_time_zone(db_time_zone):
 
 
 # The main entry point for this script
-def get_bboxes_for_user(user_screen_name):
-    db_time_zone = get_time_zone_from_db_for_user(user_screen_name)
-    if db_time_zone == None: 
-        print("User has no time zone")
-        return None
-    
-    bboxes = get_bboxes_from_db_time_zone(db_time_zone)
+def get_bboxes(time_zone):
+    print("REcieved time zone {}".format(time_zone))
+    bboxes = get_bboxes_from_db_time_zone(time_zone)
     return bboxes
