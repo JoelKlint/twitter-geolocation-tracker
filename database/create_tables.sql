@@ -124,5 +124,6 @@ CREATE TABLE IF NOT EXISTS predicted_user_locations(
   predicted_lat DECIMAL,
   predicted_long DECIMAL,
   max_value DECIMAL,
+  incorrect BOOLEAN,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 )

@@ -490,18 +490,18 @@ class Database:
         cur.close()
         return data
 
-    def update_predicted_coordinates(self, latitude, longitude, max_value, user_id):
+    def update_predicted_coordinates(self, latitude, longitude, max_value, user_id, error):
         cur = self.conn.cursor()
 
         statement = '''
-        INSERT INTO predicted_user_locations (predicted_lat, predicted_long, max_value, user_id) 
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO predicted_user_locations (predicted_lat, predicted_long, max_value, user_id, incorrect) 
+        VALUES (%s, %s, %s, %s, %s)
         ON CONFLICT (user_id) DO UPDATE 
         SET predicted_lat = excluded.predicted_lat, 
             predicted_long = excluded.predicted_long,
             max_value = excluded.max_value;
         '''
-        cur.execute(statement, (float(latitude), float(longitude), float(max_value), user_id))
+        cur.execute(statement, (float(latitude), float(longitude), float(max_value), user_id, error))
         self.conn.commit()
         cur.close()
 
