@@ -33,7 +33,7 @@ def get_country_codes_speaking_lang(tweet_lang):
         preprocess_lang_file()
     
     res = []
-    with open('map_lang_to_countries.json', 'r') as data_file:    
+    with open(filename, 'r') as data_file:    
         data = json.load(data_file)
         return data[tweet_lang]
 
