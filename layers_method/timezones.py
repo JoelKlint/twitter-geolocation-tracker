@@ -8,29 +8,21 @@ from country_bounding_boxes import (
 )
 import psycopg2
 import os
-dir = os.path.dirname(__file__)
-filename = os.path.join(dir, '../data/tzdb-2017b/zone.tab')
+import json
 
-def get_countries_using_time_zone(db_time_zone):
+def get_countries_using_time_zone(timezone):
 
-    # This file contains which countries that use a specific time zone
-    # timezones = open('../data/tzdb-2017b/zone1970.tab', 'r', encoding="utf-8")
-    timezones = open(filename, 'r', encoding="utf-8")
+    dir = os.path.dirname(__file__)
+    filename = os.path.join(dir, 'map_timezone_to_country.json')
+    if(not os.path.isfile(filename)):
+        preprocess_timezone_file()
+    
+    res = []
+    with open('map_timezone_to_country.json', 'r') as data_file:    
+        data = json.load(data_file)
+        return data.get(timezone.strip('\n'))
 
-    for line in timezones:
-        # Skip garbage
-        if(line[0] == '#'):
-            continue
-
-        # Match names of time zones
-        splitted_line = line.split('\t')
-        if db_time_zone in splitted_line[2]:
-            # Getch ISO 2 letter country codes
-            return splitted_line[0].split(',')
-
-    return None
-
-def get_special_bbox_special_treatment(db_time_zone):
+def get_bbox_special_treatment(db_time_zone):
     # Handle cases that could not be found
     special_cases = {
         'Central_Time_(US_&_Canada)': (-109.34, 10.7, -85.41, 82.44),
@@ -54,58 +46,50 @@ def get_special_bbox_special_treatment(db_time_zone):
         'Pretoria': (16.28, -35.14, 38.22, -22.13),
     }
 
-    special_case = special_cases.get(db_time_zone, None)
-    if special_case != None:
-        return special_case
-        
-    return None    
-
-def get_time_zone_from_db_for_user(user_screen_name):
-    # Fetch all time_zones from db
-    conn = psycopg2.connect('dbname={}'.format('twitter-geo'))
-    cur = conn.cursor()
-    statement = """
-        SELECT user_time_zone
-        FROM users
-        WHERE user_screen_name = %s
-        LIMIT 1
-    """
-    cur.execute(statement, (user_screen_name,))
-    conn.commit()
-    db_time_zone = cur.fetchall()
-    cur.close()
-    return db_time_zone[0][0]
+    return special_cases.get(db_time_zone, None)
 
 
-def get_bboxes_from_db_time_zone(db_time_zone):
+def get_bboxes_from_time_zone(db_time_zone):
     # Make the strings match
     time_zone = db_time_zone.replace(' ', '_')
 
     # We got a hit
-    country_codes = get_countries_using_time_zone(time_zone)
-    bbox = None
-    if country_codes != None: # Look in tz database
-        for country_code in country_codes:
-            bboxes = [c.bbox for c in country_subunits_by_iso_code(country_code)]
-            return bboxes
-            # for coords in bboxes:
-            #     # We have a bounding box
-            #     bbox = coords
-    elif get_special_bbox_special_treatment(time_zone) != None: # Look in special treatments
+    country_code = get_countries_using_time_zone(time_zone)
+    bboxes = []
+    if country_code != None: # Look in tz database
+        return [c.bbox for c in country_subunits_by_iso_code(country_code)]
+
+    elif get_bbox_special_treatment(time_zone) != None: # Look in special treatments
         # We have a bounding box
-        bbox = get_special_bbox_special_treatment(time_zone)
-        return [bbox]
+        return [get_bbox_special_treatment(time_zone)]
     else:
         # We could not find a bounding box
         return None
 
-
 # The main entry point for this script
-def get_bboxes_for_user(user_screen_name):
-    db_time_zone = get_time_zone_from_db_for_user(user_screen_name)
-    if db_time_zone == None: 
-        print("User has no time zone")
-        return None
-    
-    bboxes = get_bboxes_from_db_time_zone(db_time_zone)
+def get_bboxes(timezone):
+    bboxes = get_bboxes_from_time_zone(timezone)
     return bboxes
+
+def preprocess_timezone_file():
+    dir = os.path.dirname(__file__)
+    filename = os.path.join(dir, '../data/tzdb-2017b/zone.tab')
+    timezones = open(filename, 'r', encoding="utf-8")
+
+    res = {}
+    for line in timezones:
+        # Skip garbage
+        if(line[0] == '#'):
+            continue
+
+        
+        # Match names of time zones
+        splitted_line = line.split('\t')
+        country = splitted_line[0]
+        timezone = splitted_line[2].strip('\n')
+        res[timezone] = country
+
+    file = open('map_timezone_to_country.json', 'w') 
+    file.write(json.dumps(res, sort_keys=True, indent=4, separators=(',', ': ')))
+    file.close() 
+    print('Saved preprocessed file in map_timezones_to_country.json')
