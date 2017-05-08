@@ -29,7 +29,7 @@
 <script>
 
     var map
-    var markers = []
+    var markerCluster = null
 
     // Plot the base of the map
     function initMap() {
@@ -38,6 +38,22 @@
             center: new google.maps.LatLng(20,0),
             mapTypeId: 'terrain'
         });
+        markerCluster = new MarkerClusterer(map, [], {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
+        google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster) {
+            var markers = cluster.getMarkers()
+            var details = R.reduce(function(sum, entry) {
+                result = sum
+                result += `user_screen_name: ${entry.user_screen_name} \n`
+                result += `time zone: ${entry.user_time_zone} \n`
+                result += `user location: ${entry.user_location} \n`
+                result += `preprocessed_location: ${entry.preprocessed_location} \n`
+                result += `geonames latitude: ${entry.geonames_latitude} \n`
+                result += `geonames longitude: ${entry.geonames_longitude} \n`
+                result += '\n'
+                return result
+            })('')(markers)
+            console.log(details)
+        })
     }
 
     // Drops a marker in the map
@@ -47,9 +63,14 @@
         var marker = new google.maps.Marker({
             position: R.pick(['lat', 'lng'], entry), 
             label: 'A',
-            user_screen_name: entry.user_screen_name,
-            map: map,
+            // map: map,
             // animation: google.maps.Animation.DROP
+            user_screen_name: entry.user_screen_name,
+            user_time_zone: entry.user_time_zone,
+            user_location: entry.user_location,
+            preprocessed_location: entry.preprocessed_location,
+            geonames_latitude: entry.geonames_latitude,
+            geonames_longitude: entry.geonames_longitude,
         });
 
         // Create an onclick infowindow
@@ -63,8 +84,9 @@
         })
 
         // Make sure the cluster works
-        markers.push(marker)
-        var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
+        if (markerCluster) {
+            markerCluster.addMarkers([marker])
+        }
 
         return marker
     }

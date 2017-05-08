@@ -59,6 +59,7 @@ def get_locations():
 
     db = Database(DB_NAME)
     data = db.select_all_users_with_more_then_lang_coordinates()
+    print(data)
     return jsonify(data)
 
 app.run(debug=True)

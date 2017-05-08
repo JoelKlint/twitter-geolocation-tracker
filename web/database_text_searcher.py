@@ -147,17 +147,19 @@ class Database(Database):
     def select_all_users_with_more_then_lang_coordinates(self):
         cur = self.conn.cursor()
         statement = """
-        SELECT predicted_lat, predicted_long, user_id, user_screen_name, min(created_at) as created_at
+        SELECT predicted_lat, predicted_long, user_id, user_screen_name, min(created_at) as created_at, user_time_zone, user_location, preprocessed_location, g.latitude, g.longitude
         FROM  predicted_user_locations
         INNER JOIN users USING(user_id)
         INNER JOIN tweets USING(user_id)
+        INNER JOIN identified_via_geonames USING(user_id)
+        INNER JOIN geonames as g USING(geonameid)
         WHERE user_id NOT IN (
             SELECT user_id
             FROM users
             WHERE user_lang IS NOT NULL
             AND user_location IS NULL
             AND user_time_zone IS NULL)
-        GROUP BY user_id, predicted_lat, predicted_long, user_screen_name
+        GROUP BY user_id, predicted_lat, predicted_long, user_screen_name, user_time_zone, user_location, preprocessed_location, g.latitude, g.longitude
         ORDER BY created_at ASC;
         """
         response = []
@@ -168,7 +170,13 @@ class Database(Database):
                 'lat': float(row[0]),
                 'lng': float(row[1]),
                 'user_id': str(row[2]),
-                'user_screen_name': str(row[3])
+                'user_screen_name': str(row[3]),
+                'created_at': str(row[4]),
+                'user_time_zone': str(row[5]),
+                'user_location': str(row[6]),
+                'preprocessed_location': str(row[7]),
+                'geonames_latitude': str(row[8]),
+                'geonames_longitude': str(row[9]),
             })
 
         self.conn.commit()
