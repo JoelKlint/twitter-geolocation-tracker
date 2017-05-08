@@ -102,7 +102,7 @@ def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
 
 def main():
     db = Database('twitter-geo')
-    users = db.select_kill_all_newbs()
+    users = db.select_everything_from_users()
     nbr_of_coordinates = 100
     found_coordinates = []
     i = 0

@@ -467,10 +467,7 @@ class Database:
             SELECT * FROM users as u
             LEFT OUTER JOIN predicted_user_locations as p
             USING(user_id)
-            WHERE u.user_location IS NOT NULL
-            AND u.user_lang IS NOT NULL
-            AND u.user_time_zone IS NOT NULL
-            AND p.predicted_lat IS NULL
+            WHERE p.predicted_lat IS NULL
             AND p.predicted_long IS NULL;
         '''
 
