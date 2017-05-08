@@ -147,15 +147,18 @@ class Database(Database):
     def select_all_users_with_more_then_lang_coordinates(self):
         cur = self.conn.cursor()
         statement = """
-        SELECT predicted_lat, predicted_long, user_id, user_screen_name
+        SELECT predicted_lat, predicted_long, user_id, user_screen_name, min(created_at) as created_at
         FROM  predicted_user_locations
         INNER JOIN users USING(user_id)
+        INNER JOIN tweets USING(user_id)
         WHERE user_id NOT IN (
             SELECT user_id
             FROM users
             WHERE user_lang IS NOT NULL
             AND user_location IS NULL
-            AND user_time_zone IS NULL);
+            AND user_time_zone IS NULL)
+        GROUP BY user_id, predicted_lat, predicted_long, user_screen_name
+        ORDER BY created_at ASC;
         """
         response = []
         cur.execute(statement)
