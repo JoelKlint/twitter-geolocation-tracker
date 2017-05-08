@@ -43,13 +43,19 @@ def calculate_highest_point(layers):
 
     lat -= 90*accuracy
     long -= 180*accuracy
+    lat = lat/accuracy
+    long = long/accuracy
+    print ('Final location:', [lat, long])
     return [lat, long, max, error]
 
 def add_user_name_location_layer(user_screen_name, all_layers, status_code=False):
     global accuracy
     user_location_value = weights['user_location']
+    print ('Getting user_name_location')
     user_name_bb = user_locations.get_bbox(user_screen_name)
+    print('User location bb is', user_name_bb)
     if user_name_bb != None:
+        print ('Mapping to bounding box')
         layer = bbtomatrix.map_boundingbox_to_matrix(user_name_bb, accuracy, user_location_value)
         status_code = True
         all_layers.append(layer)

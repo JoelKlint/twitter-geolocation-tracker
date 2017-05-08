@@ -13,9 +13,13 @@ def remove_coordinate_decimals(coordinate, nbr_of_numbers_to_keep):
             new_coordinate += '-'
         else:
             new_coordinate += nbr
-    for i, nbr in enumerate(decimal):
+    new_coordinate += '.'
+    i = 0
+    while(i < nbr_of_numbers_to_keep):
         if i < nbr_of_numbers_to_keep:
-            new_coordinate += nbr
+            new_coordinate += decimal[i]
+        i+=1
+
     return float(new_coordinate)
 
 #Creates a matrix for a bounding box in accordance to the world
@@ -37,18 +41,20 @@ def map_boundingbox_to_matrix(boudning_box, matrix_accuracy, scale):
             rounded_coordinate = int(coordinate)
             rounded_boundingbox.append(rounded_coordinate)
 
-    min_long = rounded_boundingbox[0]
-    min_lat = rounded_boundingbox[1]
-    max_long = rounded_boundingbox[2]
-    max_lat = rounded_boundingbox[3]
+    min_long = rounded_boundingbox[0]*matrix_accuracy
+    min_lat = rounded_boundingbox[1]*matrix_accuracy
+    max_long = rounded_boundingbox[2]*matrix_accuracy
+    max_lat = rounded_boundingbox[3]*matrix_accuracy
 
     min_long += 180*matrix_accuracy
     max_long += 180*matrix_accuracy
     min_lat += 90*matrix_accuracy
     max_lat += 90*matrix_accuracy
 
-    for current_long in range(min_long, max_long, 1):
-        for current_lat in range(min_lat, max_lat, 1):
+
+
+    for current_long in range(int(min_long), int(max_long), 1):
+        for current_lat in range(int(min_lat), int(max_lat), 1):
             matrix_coordinates[current_long, current_lat] = scale
 
     return matrix_coordinates
