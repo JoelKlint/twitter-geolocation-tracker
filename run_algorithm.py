@@ -28,12 +28,13 @@ def calculate_highest_point(layers):
         result_matrix = np.add(result_matrix, layer)
 
     max = np.max(result_matrix)
-    indices = np.where(result_matrix == result_matrix.max())
+    indices = np.where(result_matrix == max)
+    long_mid_index = int(len(indices[0])/2)
+    lat_removed_duplicates = set(indices[1])
+    lat_mid_index = int(len(lat_removed_duplicates)/2)
+    long = indices[0][long_mid_index]
+    lat = indices[1][lat_mid_index]
 
-    long_mid = int(len(indices[0])/2)
-    lat_mid = int(len(indices[1])/2)
-    long = indices[0][long_mid]
-    lat = indices[1][lat_mid]
 
     # Figure out if we picked a incorrect coordinate
     error = False
@@ -89,6 +90,7 @@ def add_tweet_language_layer(user_lang, all_layers, status_code=False):
 def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
     global accuracy
     timezone_value = weights['user_time_zone']
+
     timezone_bbs = timezones.get_bboxes(user_time_zone)
     if timezone_bbs != None:
         for bb in timezone_bbs:
@@ -108,7 +110,6 @@ def main():
     i = 0
     #Create layers for each user and print thier highest point
     for user in users:
-        print ('user:', user)
         all_layers = []
         user_id = user[0]
         user_screen_name = user[1]
@@ -122,8 +123,6 @@ def main():
 
         add_user_name_location_layer(user_screen_name, all_layers, got_user_location)
 
-        #not done
-        #add_user_language_layer(user_lang, all_layers)
 
         if user_time_zone != None:
             add_time_zone_layer(user_time_zone, all_layers)
@@ -160,14 +159,13 @@ def main():
 
                 if tweet_lang != None and tweet_lang not in used_extra_langs:
                     used_extra_langs.append(tweet_lang)
-                    print ("Extra Lang is:", tweet_lang)
                     add_tweet_language_layer(tweet_lang, all_layers)
                 if tweet_time_zone != None and tweet_time_zone not in used_extra_time_zones :
                     used_extra_time_zones.append(tweet_time_zone)
                     add_time_zone_layer(tweet_time_zone, all_layers)
-
-        result = calculate_highest_point(all_layers)
-        # print ('The user:', user_name, 'is located at: lat=',
-        # result[0], 'long=', result[1], 'with maxvalue=', result[2])
-        db.update_predicted_coordinates(result[0], result[1], result[2], user_id, result[3])
+        if len(all_layers) > 0:
+            result = calculate_highest_point(all_layers)
+            db.update_predicted_coordinates(result[0], result[1], result[2], user_id, result[3])
+        else:
+            print ('No layer found')
 main()

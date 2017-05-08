@@ -61,7 +61,7 @@
                     return marker.user_screen_name
                 })
                 users = R.reduce(function(sum, str) {
-                    return sum + `user_screen_name = ${str} \n`
+                    return sum + `user_screen_name = '${str}' OR \n`
                 })('')(users)
                 console.log(users)
             })
