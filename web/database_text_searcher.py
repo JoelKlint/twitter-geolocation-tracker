@@ -126,10 +126,37 @@ class Database(Database):
             SELECT predicted_lat, predicted_long, user_id, user_screen_name
             FROM predicted_user_locations
             INNER JOIN users
-            USING(user_id)
-            WHERE predicted_lat <> 0 AND predicted_long <> 0;
+            USING(user_id);
         """
 
+        response = []
+        cur.execute(statement)
+        rows = cur.fetchall()
+        for row in rows:
+            response.append({
+                'lat': float(row[0]),
+                'lng': float(row[1]),
+                'user_id': str(row[2]),
+                'user_screen_name': str(row[3])
+            })
+
+        self.conn.commit()
+        cur.close()
+        return response
+
+    def select_all_users_with_more_then_lang_coordinates(self):
+        cur = self.conn.cursor()
+        statement = """
+        SELECT predicted_lat, predicted_long, user_id, user_screen_name
+        FROM  predicted_user_locations
+        INNER JOIN users USING(user_id)
+        WHERE user_id NOT IN (
+            SELECT user_id
+            FROM users
+            WHERE user_lang IS NOT NULL
+            AND user_location IS NULL
+            AND user_time_zone IS NULL);
+        """
         response = []
         cur.execute(statement)
         rows = cur.fetchall()

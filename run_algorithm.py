@@ -44,10 +44,10 @@ def calculate_highest_point(layers):
     long -= 180*accuracy
     return [lat, long, max, error]
 
-def add_user_name_location_layer(user_name, all_layers, status_code=False):
+def add_user_name_location_layer(user_screen_name, all_layers, status_code=False):
     global accuracy
     user_location_value = weights['user_location']
-    user_name_bb = user_locations.get_bbox(user_name)
+    user_name_bb = user_locations.get_bbox(user_screen_name)
     if user_name_bb != None:
         layer = bbtomatrix.map_boundingbox_to_matrix(user_name_bb, accuracy, user_location_value)
         status_code = True
@@ -102,24 +102,25 @@ def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
 
 def main():
     db = Database('twitter-geo')
-    users = get_users_data()
+    users = db.select_everything_from_users()
     nbr_of_coordinates = 100
     found_coordinates = []
     i = 0
     #Create layers for each user and print thier highest point
     for user in users:
+        print ('user:', user)
         all_layers = []
         user_id = user[0]
-        user_name = user[2]
+        user_screen_name = user[1]
         user_lang = user[8]
         user_time_zone = user[7]
 
-        # print ("Running user" , user_name)
+        print ("Running user" , user_screen_name)
 
         # Adding user specified location layer
         got_user_location = False
 
-        add_user_name_location_layer(user_name, all_layers, got_user_location)
+        add_user_name_location_layer(user_screen_name, all_layers, got_user_location)
 
         #not done
         #add_user_language_layer(user_lang, all_layers)
@@ -147,7 +148,6 @@ def main():
 
         #Handle Extra tweets
         extra_tweets = []
-        print ('Getting extra data for:', user_name)
         if len(user_tweets) < 3:
             extra_user_data = Extra_User_Data(user_id)
             extra_tweets = extra_user_data.get_all_tweets()
@@ -169,6 +169,5 @@ def main():
         result = calculate_highest_point(all_layers)
         # print ('The user:', user_name, 'is located at: lat=',
         # result[0], 'long=', result[1], 'with maxvalue=', result[2])
-        #print ('Updating database')
         db.update_predicted_coordinates(result[0], result[1], result[2], user_id, result[3])
 main()
