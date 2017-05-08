@@ -42,7 +42,12 @@
                     position: R.pick(['lat', 'lng'], entry), 
                     // label: R.path(['user_id'], entry),
                     label: 'A',
-                    user_screen_name: entry.user_screen_name
+                    user_screen_name: entry.user_screen_name,
+                    user_time_zone: entry.user_time_zone,
+                    user_location: entry.user_location,
+                    preprocessed_location: entry.preprocessed_location,
+                    geonames_latitude: entry.geonames_latitude,
+                    geonames_longitude: entry.geonames_longitude,
                 });
                 var infowindow = new google.maps.InfoWindow({
                     content:    'Latitude: <b>' + entry.lat + '</b><br>' + 
@@ -57,13 +62,18 @@
             var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
             google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster) {
                 var markers = cluster.getMarkers()
-                var users = markers.map(function(marker) {
-                    return marker.user_screen_name
-                })
-                users = R.reduce(function(sum, str) {
-                    return sum + `user_screen_name = '${str}' OR \n`
-                })('')(users)
-                console.log(users)
+                var details = R.reduce(function(sum, entry) {
+                    result = sum
+                    result += `user_screen_name: ${entry.user_screen_name} \n`
+                    result += `time zone: ${entry.user_time_zone} \n`
+                    result += `user location: ${entry.user_location} \n`
+                    result += `preprocessed_location: ${entry.preprocessed_location} \n`
+                    result += `geonames latitude: ${entry.geonames_latitude} \n`
+                    result += `geonames longitude: ${entry.geonames_longitude} \n`
+                    result += '\n'
+                    return result
+                })('')(markers)
+                console.log(details)
             })
         })
         .fail(function() {
