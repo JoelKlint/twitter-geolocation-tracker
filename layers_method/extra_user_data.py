@@ -23,8 +23,8 @@ class Extra_User_Data():
 
     def authenticate(self):
         global auth_header
-        c_key = os.environ["TWITTER_KEY"]
-        c_secret = os.environ["TWITTER_SECRET"]
+        c_key = os.environ["TWITTER_CONSUMER_KEY"]
+        c_secret = os.environ["TWITTER_CONSUMER_SECRET"]
         credentials = self.base64encode(c_key + ":" + c_secret)
 
         url = base_url + "/oauth2/token"
