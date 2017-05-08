@@ -45,9 +45,13 @@ def searchTemplate(table='users'):
         data = db.generateTableData(table)
     return render_template('search.html', tables=tables, data=data)
 
-@app.route("/cluster_data", methods=['GET'])
-def cluster():
-    return render_template('cluster_data.html')
+@app.route("/animation_map", methods=['GET'])
+def animation_map():
+    return render_template('map_animation.html')
+
+@app.route("/static_map", methods=['GET'])
+def static_map():
+    return render_template('map_static.html')
 
 
 @app.route('/locations', methods=['GET'])
