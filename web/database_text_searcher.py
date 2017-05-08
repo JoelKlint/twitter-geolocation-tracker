@@ -123,8 +123,10 @@ class Database(Database):
     def select_users_with_predicted_coordinates(self):
         cur = self.conn.cursor()
         statement = """
-            SELECT predicted_lat, predicted_long
+            SELECT predicted_lat, predicted_long, user_id, user_screen_name
             FROM predicted_user_locations
+            INNER JOIN users
+            USING(user_id)
             WHERE predicted_lat <> 0 AND predicted_long <> 0;
         """
 
@@ -135,6 +137,8 @@ class Database(Database):
             response.append({
                 'lat': float(row[0]),
                 'lng': float(row[1]),
+                'user_id': str(row[2]),
+                'user_screen_name': str(row[3])
             })
 
         self.conn.commit()

@@ -19,33 +19,57 @@
 <div id="map"></div>
 <script>
 
+
+
     function initMap() {
 
         // Get locations from server, then plot it
         $.get('locations')
-        .done(stuffFromServer => {
+        .done(function(stuffFromServer) {
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 1,
-                center: new google.maps.LatLng(0,0),
+                zoom: 2,
+                center: new google.maps.LatLng(20,0),
                 mapTypeId: 'terrain'
             });
 
-            var markers = stuffFromServer.map((location, i) => {
-                return new google.maps.Marker({
-                    position: location, 
-                    label: 'A'
+            var markers = stuffFromServer.map(function(entry, i) {
+                var marker = new google.maps.Marker({
+                    position: R.pick(['lat', 'lng'], entry), 
+                    // label: R.path(['user_id'], entry),
+                    label: 'A',
+                    user_screen_name: entry.user_screen_name
                 });
+                var infowindow = new google.maps.InfoWindow({
+                    content:    'Latitude: <b>' + entry.lat + '</b><br>' + 
+                                'Longitude: <b>' + entry.lng + '</b><br>' + 
+                                'User: <b>' + entry.user_screen_name + '</b>'
+                });
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker)
+                })
+                return marker
             });
 
             var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
+            google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster) {
+                var markers = cluster.getMarkers()
+                // console.log('Lat: ' + markers[0].getPosition().lat())
+                // console.log('Long: ' + markers[0].getPosition().lng())
+                // console.log('User: ' + markers[0].user_screen_name)
+                console.log(markers.map(function(marker) {
+                    return marker.user_screen_name
+                }))
+            })
 
         })
-        .fail(() => {
+        .fail(function() {
             alert('Error getting stuff from server')
         })        
 
     }
 </script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.23.0/ramda.min.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 

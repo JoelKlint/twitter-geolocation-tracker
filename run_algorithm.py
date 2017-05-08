@@ -8,6 +8,12 @@ import layers_method.user_timezone as timezones
 
 accuracy = 1
 
+weights = {
+    'user_location': 6,
+    'user_time_zone': 4,
+    'tweet_language': 1,
+}
+
 def get_users_data():
     db = Database('twitter-geo')
     return db.select_everything_from_users()
@@ -40,7 +46,7 @@ def calculate_highest_point(layers):
 
 def add_user_name_location_layer(user_name, all_layers, status_code=False):
     global accuracy
-    user_location_value = 5
+    user_location_value = weights['user_location']
     user_name_bb = user_locations.get_bbox(user_name)
     if user_name_bb != None:
         layer = bbtomatrix.map_boundingbox_to_matrix(user_name_bb, accuracy, user_location_value)
@@ -52,7 +58,7 @@ def add_user_name_location_layer(user_name, all_layers, status_code=False):
 
 def add_tweet_language_layer(user_lang, all_layers, status_code=False):
     global accuracy
-    language_value = 10
+    language_value = weights['tweet_language']
     user_lang_bb = lang.get_bboxes_and_weights(user_lang)
     if user_lang_bb != None:
 
@@ -82,7 +88,7 @@ def add_tweet_language_layer(user_lang, all_layers, status_code=False):
 
 def add_time_zone_layer(user_time_zone, all_layers, statuscode=False):
     global accuracy
-    timezone_value = 1
+    timezone_value = weights['user_time_zone']
     timezone_bbs = timezones.get_bboxes(user_time_zone)
     if timezone_bbs != None:
         for bb in timezone_bbs:
@@ -141,24 +147,22 @@ def main():
 
         #Handle Extra tweets
         extra_tweets = []
-        if len(user_tweets) < 20:
+        print ('Getting extra data for:', user_name)
+        if len(user_tweets) < 3:
             extra_user_data = Extra_User_Data(user_id)
-            # print (extra_user_data.get_all_tweets())
             extra_tweets = extra_user_data.get_all_tweets()
         used_extra_time_zones = []
         used_extra_langs= []
-        if len (extra_tweets) > 0:
+        if extra_tweets != None and len (extra_tweets) > 0:
             for tweet in extra_tweets:
                 tweet_lang = extra_user_data.get_language_of_tweet(tweet)
                 tweet_time_zone = extra_user_data.get_user_time_zone_of_tweet(tweet)
-                # print ("Extra Lang is:", tweet_lang)
-                # print ("Extra Time zone is:", tweet_time_zone)
 
                 if tweet_lang != None and tweet_lang not in used_extra_langs:
                     used_extra_langs.append(tweet_lang)
+                    print ("Extra Lang is:", tweet_lang)
                     add_tweet_language_layer(tweet_lang, all_layers)
                 if tweet_time_zone != None and tweet_time_zone not in used_extra_time_zones :
-                    # print ('Getting tweet time zone', tweet_time_zone)
                     used_extra_time_zones.append(tweet_time_zone)
                     add_time_zone_layer(tweet_time_zone, all_layers)
 

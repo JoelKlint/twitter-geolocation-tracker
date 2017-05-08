@@ -464,7 +464,14 @@ class Database:
     def select_everything_from_users (self):
         cur = self.conn.cursor()
         statement = '''
-        SELECT * FROM USERS;
+            SELECT * FROM users as u
+            LEFT OUTER JOIN predicted_user_locations as p
+            USING(user_id)
+            WHERE u.user_location IS NOT NULL
+            AND u.user_lang IS NOT NULL
+            AND u.user_time_zone IS NOT NULL
+            AND p.predicted_lat IS NULL
+            AND p.predicted_long IS NULL;
         '''
 
         cur.execute(statement)

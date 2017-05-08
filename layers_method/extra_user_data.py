@@ -1,39 +1,60 @@
 import tweepy
 import os
 import json
+import requests
+import base64
 
+
+auth_header = None
+base_url = "https://api.twitter.com"
 #This class connects to the twitter api and gets 20 more tweets and stores them
 class Extra_User_Data():
 
     def __init__(self, user_id):
-        api = self.connect_to_api()
-        user_id = [user_id]
-        tweets = self.get_more_tweets(api, user_id)
-        self.tweets = []
-        if tweets:
-            for tweet in tweets:
-                mapped_tweet = self.tweet_to_map(tweet)
-                self.tweets.append(mapped_tweet)
+        print ('Extra user id:', user_id)
+        self.authenticate()
+        self.tweets = self.get_latest_tweets_by_id(user_id)
 
 
-    def connect_to_api(self):
-        consumer_key = os.environ["TWITTER_CONSUMER_KEY"]
-        consumer_secret = os.environ["TWITTER_CONSUMER_SECRET"]
-        access_token = os.environ["TWITTER_ACCESS_TOKEN"]
-        access_token_secret = os.environ["TWITTER_ACCESS_TOKEN_SECRET"]
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        return tweepy.API(auth)
+    def base64encode(self, string):
+        a = string.encode('utf-8')
+        b = str(base64.b64encode(a))
+        return b.split('\'')[1]
 
-    def tweet_to_map(self, tweet):
-        to_map = json.dumps(tweet._json)
-        return json.loads(to_map)
+    def authenticate(self):
+        global auth_header
+        c_key = os.environ["TWITTER_KEY"]
+        c_secret = os.environ["TWITTER_SECRET"]
+        credentials = self.base64encode(c_key + ":" + c_secret)
 
-    def get_more_tweets(self, api, user_id):
-        try:
-            return api.statuses_lookup(user_id)
-        except tweepy.error.TweepError:
+        url = base_url + "/oauth2/token"
+        body = "grant_type=client_credentials"
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8.',
+            'Authorization': 'Basic {}'.format(credentials)}
+
+
+        r = requests.post(url, headers=headers, data=body)
+        if r.status_code == requests.codes.ok:
+            token = r.json()
+            bearer = token['access_token']
+            auth_header = {'Authorization': 'Bearer {}'.format(bearer)}
+            # print('Bearer is {}'.format(bearer))
+            return True
+        else:
+            print('Could not get Twitter API token')
             return False
+
+
+    def get_latest_tweets_by_id(self, id):
+        url = base_url + "/1.1/statuses/user_timeline.json"
+        params = {'id': str(id)}
+        r = requests.get(url, params=params, headers=auth_header)
+        if r.status_code == requests.codes.ok:
+            return r.json()
+        else:
+            print("Could not get latest tweet")
+            return None
 
 
     def get_all_tweets(self):
