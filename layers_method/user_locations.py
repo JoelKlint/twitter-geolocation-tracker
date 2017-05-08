@@ -40,10 +40,12 @@ def find_user_id(user_screen_name):
 
 def get_bbox(user_screen_name):
     padding = 1
+    print ('user_screen_name is:',user_screen_name)
     user_id_and_coordinates = execute_query_for_identified_location(user_screen_name)
 
     #Eiter the user has not given a user locations, or it has not yet been handled
     if user_id_and_coordinates == None:
+        print('Got Null in database check!')
         #Try a lookup in geonames and try to get a new location
         #print ('Doing Extra lookup!')
         user_id = find_user_id(user_screen_name)
@@ -51,6 +53,7 @@ def get_bbox(user_screen_name):
         user_id_and_coordinates = execute_query_for_identified_location(user_screen_name)
         #New user location found
         if user_id_and_coordinates != None:
+            print ('Got Null in geonames check')
             #print ('New Lookup location found location!')
             coordinates = [user_id_and_coordinates[1], user_id_and_coordinates[2]]
             return create_bounding_box(coordinates, padding)

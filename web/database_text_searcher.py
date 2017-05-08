@@ -126,8 +126,7 @@ class Database(Database):
             SELECT predicted_lat, predicted_long, user_id, user_screen_name
             FROM predicted_user_locations
             INNER JOIN users
-            USING(user_id)
-            WHERE predicted_lat <> 0 AND predicted_long <> 0;
+            USING(user_id);
         """
 
         response = []

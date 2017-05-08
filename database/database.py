@@ -482,6 +482,21 @@ class Database:
         cur.close()
         return data
 
+    def select_kill_all_newbs(self):
+        cur = self.conn.cursor()
+        statement = '''
+                SELECT * FROM users
+                where user_screen_name = 'kill_all_newbs';
+            '''
+
+        cur.execute(statement)
+        self.conn.commit()
+
+        data = cur.fetchall()
+
+        cur.close()
+        return data
+
     def select_every_tweet_of_user (self, user_id):
         cur = self.conn.cursor()
         statement = '''
@@ -515,15 +530,13 @@ class Database:
     def select_users_with_predicted_coordinates(self):
         cur = self.conn.cursor()
         statement = '''
-            SELECT * 
-            FROM predicted_user_locations
-            WHERE predicted_lat <> 0 AND predicted_long <> 0;
+            SELECT *
+            FROM predicted_user_locations;
             '''
 
         cur.execute(statement)
         self.conn.commit()
 
         data = cur.fetchall()
-
         cur.close()
         return data

@@ -92,8 +92,9 @@ def get_locations():
     ]
 
     db = Database(DB_NAME)
+    print ('Getting from db')
     data = db.select_users_with_predicted_coordinates()
-
+    print(data)
     return jsonify(data)
 
     # {
