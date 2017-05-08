@@ -53,12 +53,13 @@
             var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
             google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster) {
                 var markers = cluster.getMarkers()
-                // console.log('Lat: ' + markers[0].getPosition().lat())
-                // console.log('Long: ' + markers[0].getPosition().lng())
-                // console.log('User: ' + markers[0].user_screen_name)
-                console.log(markers.map(function(marker) {
+                var users = markers.map(function(marker) {
                     return marker.user_screen_name
-                }))
+                })
+                users = R.reduce(function(sum, str) {
+                    return sum + `user_screen_name = ${str} \n`
+                })('')(users)
+                console.log(users)
             })
 
         })
