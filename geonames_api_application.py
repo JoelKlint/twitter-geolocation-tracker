@@ -9,6 +9,7 @@ def make_search_request(query):
     r = requests.get(base_url, base_payload)
     return r.json()
 
+#Not used
 def split_on_common_characters(query):
     result = []
     if '/' in query:
@@ -49,47 +50,37 @@ def lookup(db, location, throttle_count=0, no_result_count=0):
 
     #Check given user location
     query = user_location
-    #print ("Sending query for: ", query)
     result = make_search_request(query)
-    #print (result)
     total_results = result['totalResultsCount']
 
     if total_results > 0:
-        #print("FOUND RESULT")
         id = result['geonames'][0]['geonameId']
         country_name = result['geonames'][0].get('countryName', None)
         db.insert_into_identified_via_geonames(user_id, id, country_name)
     else:
         # Check our preprocessed locations
-        #print ("Failed.... Checking Preprocessed locations")
         query = preprocessed_location
-        #print ("Sending query for: ", query)
         result = make_search_request(query)
         if result['totalResultsCount'] > 0:
-            #print ("FOUND RESULT")
             id = result['geonames'][0]['geonameId']
             country_name = result['geonames'][0].get('countryName', None)
             db.insert_into_identified_via_geonames(user_id, id, country_name)
         else:
             # Check our preprocessed preprocessed rest
-            #print('Failed.... Checking Rest of preprocess if exists')
             if (preprocessed_rest):
                 query = preprocessed_rest
                 result = make_search_request(query)
-                #print ("Sending query for: ", query)
                 if (result['totalResultsCount'] > 0):
                     id = result['geonames'][0]['geonameId']
                     country_name = result['geonames'][0].get('countryName', None)
                     db.insert_into_identified_via_geonames(user_id, id, country_name)
             else:
                 #CHECKING EACH INDIVIDUAL WORD
-                #print('Failed.... Checking Every Word')
                 list_words = split_to_words(preprocessed_location)
                 if (preprocessed_rest):
                     list_words += split_to_words(preprocessed_rest)
                 for word in list_words:
                     query = word
-                    #print ("Sending query for: ", word)
                     result = make_search_request(query)
                     if result['totalResultsCount'] > 0:
                         id = result['geonames'][0]['geonameId']
@@ -97,7 +88,6 @@ def lookup(db, location, throttle_count=0, no_result_count=0):
                         db.insert_into_identified_via_geonames(user_id, id, country_name)
                         break
                     else:
-                        #print ("Still no result")
                         no_result_count += 1
 
 
@@ -108,7 +98,6 @@ def run_location_lookup_on_all_users():
     for location in some_user_locations_with_ids:
         throttle_count = 0
         lookup(db, location, throttle_count, no_result_count)
-    #print('No result for: ', no_result_count, " queries")
 
 def run_location_lookup_on_a_user(user_id):
     db = Database("twitter-geo")

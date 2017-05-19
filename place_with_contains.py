@@ -8,11 +8,8 @@ def similar(a, b):
 
 db = Database("twitter-geo")
 
-#user_id, userlocations (in an array)
 user_locations = db.select_user_locations()
-#geonameid, name, asciiname, latitude, longitude(in an array)
 db_locations = db.select_database_locations()
-#userlocation, db_location(either name or asciiname), latitude, longitude
 found_locations = []
 for user_location in user_locations:
     print ("Parsing: ", user_location)
@@ -20,7 +17,6 @@ for user_location in user_locations:
     max_geoid = 0
     has_been_inserted = False
     for db_location in db_locations:
-        #if not(db_location[0] == None) and user_location in db_location[0]:
         if not(db_location[1] == None):
             ratio = similar(user_location[1], db_location[1])
             if ratio == 1:
@@ -31,7 +27,6 @@ for user_location in user_locations:
                 max = ratio
                 max_geoid = db_location[0]
 
-        #elif not(db_location[1] == None) and user_location in db_location[1]:
         elif not(db_location[2] == None):
             ratio = similar(user_location[1], db_location[2])
             if ratio == 1:

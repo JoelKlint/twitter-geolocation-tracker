@@ -13,7 +13,6 @@ class StreamListener(tweepy.StreamListener):
         self.verbose = ShellArguments.get_args().verbose
 
     def on_data(self, raw_data):
-        # print("-----")
         data = json.loads(raw_data)
 
         # Extract tweet info

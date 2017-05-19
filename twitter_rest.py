@@ -28,7 +28,6 @@ def authenticate():
         token = r.json()
         bearer = token['access_token']
         auth_header = {'Authorization': 'Bearer {}'.format(bearer)}
-        # print('Bearer is {}'.format(bearer))
         return True
     else:
         print('Could not get Twitter API token')

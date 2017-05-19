@@ -61,7 +61,6 @@ def add_user_name_location_layer(user_screen_name, all_layers, status_code=False
         all_layers.append(layer)
     else:
         a=1
-        # print("User have no location")
 
 def add_tweet_language_layer(user_lang, all_layers, status_code=False):
     global accuracy
@@ -134,7 +133,6 @@ def main():
             add_time_zone_layer(user_time_zone, all_layers)
         else:
             a=1
-            # print ("Got none for user time zone")
 
 
         user_tweets = db.select_every_tweet_of_user(user_id)
