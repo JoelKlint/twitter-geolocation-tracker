@@ -12,3 +12,4 @@ twitter-with-geonames.dump
 twitter-with-preprocessed.dump
 twitter-before-geoname-api-identification.dump
 post_easter.dump
+node_modules

@@ -105,7 +105,7 @@ const locations = [
 
 const get_data_for_location = (location) => {
 
-    const base_url = "http://www.google.com/maps?q="
+    const base_url = "https://www.google.com/maps?q="
     const request_url = base_url + location
 
     superagent
